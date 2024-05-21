@@ -110,3 +110,42 @@ func SearchTitles(query string, c ...SearchConfigs) (*SearchResults, error) {
 	return &results, nil
 
 }
+
+// Search for globally on imdb across titles and names.
+// The first element in a global search is sometimes an advertisement these have a url path as id.
+//
+// - query (string) - The query or keyword to search for.
+// - configs (optional) - Additional request configs.
+func SearchAll(query string, c ...SearchConfigs) (*SearchResults, error) {
+	if len(query) < 1 {
+		return nil, errors.New("searchtitles: query too short")
+	}
+
+	url := fmt.Sprintf(allSearchURL, query[0:1], query)
+
+	if len(c) > 0 && c[0].IncludeVideos {
+		url += "?includeVideos=1"
+	}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "searchtitles: failed to create request")
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:107.0) Gecko/20100101 Firefox/107.0")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "searchtitles: failed to create request")
+	}
+
+	defer resp.Body.Close()
+
+	var results SearchResults
+	json.NewDecoder(resp.Body).Decode(&results)
+	if len(results.Results) < 1 {
+		return &results, ErrNoResults
+	}
+
+	return &results, nil
+
+}

@@ -16,3 +16,14 @@ func TestSearchTitles(t *testing.T) {
 	t.Logf("%+v", res)
 
 }
+
+func TestSearchAll(t *testing.T) {
+	res, err := imdb.SearchAll("mad")
+	if err != nil {
+		t.Error(err)
+		t.Failed()
+	}
+
+	t.Logf("%+v", res)
+
+}
