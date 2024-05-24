@@ -44,8 +44,15 @@ func Xpath(doc *html.Node, val any) any {
 
 		path := args[0]
 		var method string
+		var attr string
 		if len(args) > 1 {
 			method = args[1]
+			if strings.HasPrefix(method, "attr") {
+				if a := strings.SplitN(method, "_", 2); len(a) > 1 {
+					method = "attr"
+					attr = a[1]
+				}
+			}
 		}
 
 		node, err := htmlquery.Query(doc, path)
@@ -58,14 +65,14 @@ func Xpath(doc *html.Node, val any) any {
 		//Extra options are passed with a seperator | in the xpath struct tag, for ex. src to get the src attr of a node
 		switch method {
 
-		case "src":
-			var src string
+		case "attr":
 			for _, a := range node.Attr {
-				if a.Key == "src" {
-					src = a.Val
+				if a.Key == attr {
+					tmp.FieldByName(field.Name).SetString(a.Val)
+					break
 				}
 			}
-			tmp.FieldByName(field.Name).SetString(src)
+
 		default:
 			//If the field is of type []Link all inner a tags are extracted
 			//If field type is []string innertex of each li tag is extracted

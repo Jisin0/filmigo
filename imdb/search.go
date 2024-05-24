@@ -12,6 +12,7 @@ import (
 
 const (
 	titleSearchURL = "https://v3.sg.media-imdb.com/suggestion/titles/%v/%v.json"
+	nameSearchURL  = "https://v3.sg.media-imdb.com/suggestion/names/%v/%v.json"
 	allSearchURL   = "https://v3.sg.media-imdb.com/suggestion/%v/%v.json"
 )
 
@@ -77,37 +78,17 @@ var ErrNoResults error = errors.New("no search results were found")
 //
 // - query (string) - The query or keyword to search for.
 // - configs (optional) - Additional request configs.
-func SearchTitles(query string, c ...SearchConfigs) (*SearchResults, error) {
-	if len(query) < 1 {
-		return nil, errors.New("searchtitles: query too short")
-	}
+func (c *ImdbClient) SearchTitles(query string, configs ...*SearchConfigs) (*SearchResults, error) {
+	return c.doSearch(titleSearchURL, query, configs...)
 
-	url := fmt.Sprintf(titleSearchURL, query[0:1], query)
+}
 
-	if len(c) > 0 && c[0].IncludeVideos {
-		url += "?includeVideos=1"
-	}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "searchtitles: failed to create request")
-	}
-
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:107.0) Gecko/20100101 Firefox/107.0")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrap(err, "searchtitles: failed to create request")
-	}
-
-	defer resp.Body.Close()
-
-	var results SearchResults
-	json.NewDecoder(resp.Body).Decode(&results)
-	if len(results.Results) < 1 {
-		return &results, ErrNoResults
-	}
-
-	return &results, nil
+// Search for only people/names.
+//
+// - query (string) - The query or keyword to search for.
+// - configs (optional) - Additional request configs.
+func (c *ImdbClient) SearchNames(query string, configs ...*SearchConfigs) (*SearchResults, error) {
+	return c.doSearch(nameSearchURL, query, configs...)
 
 }
 
@@ -116,12 +97,19 @@ func SearchTitles(query string, c ...SearchConfigs) (*SearchResults, error) {
 //
 // - query (string) - The query or keyword to search for.
 // - configs (optional) - Additional request configs.
-func SearchAll(query string, c ...SearchConfigs) (*SearchResults, error) {
+func (c *ImdbClient) SearchAll(query string, configs ...*SearchConfigs) (*SearchResults, error) {
+	return c.doSearch(allSearchURL, query, configs...)
+
+}
+
+// Helper method for search operations.
+func (*ImdbClient) doSearch(baseUrl string, query string, c ...*SearchConfigs) (*SearchResults, error) {
+
 	if len(query) < 1 {
-		return nil, errors.New("searchtitles: query too short")
+		return nil, errors.New("imdb.search: query too short")
 	}
 
-	url := fmt.Sprintf(allSearchURL, query[0:1], query)
+	url := fmt.Sprintf(baseUrl, query[0:1], query)
 
 	if len(c) > 0 && c[0].IncludeVideos {
 		url += "?includeVideos=1"
@@ -129,13 +117,13 @@ func SearchAll(query string, c ...SearchConfigs) (*SearchResults, error) {
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		return nil, errors.Wrap(err, "searchtitles: failed to create request")
+		return nil, errors.Wrap(err, "imdb.search: failed to create request")
 	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:107.0) Gecko/20100101 Firefox/107.0")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, errors.Wrap(err, "searchtitles: failed to create request")
+		return nil, errors.Wrap(err, "imdb.search: failed to create request")
 	}
 
 	defer resp.Body.Close()

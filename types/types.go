@@ -14,3 +14,10 @@ type Link struct {
 
 // A list of links.
 type Links []Link
+
+// A range value with a start and end used for advanced search queries.
+// Both start and end MUST be set when using this value.
+type SearchRange struct {
+	Start string
+	End   string
+}

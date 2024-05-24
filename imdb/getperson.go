@@ -14,7 +14,7 @@ import (
 
 const (
 	//path for homepage of any imdb movie/show
-	personBaseUrl = "https://imdb.com/name/"
+	personBaseUrl = baseImdbURL + "/name"
 )
 
 // Type containing the full data about a person scraped from their imdb page.
@@ -36,7 +36,7 @@ type Person struct {
 	Bio string `xpath:"//div[@data-testid='bio-content']//div[contains(@class, 'inner')]"`
 
 	//Poster image of the person.
-	Poster string `xpath:"//div[starts-with(@class, 'ipc-poster')]//img|src"`
+	Poster string `xpath:"//div[starts-with(@class, 'ipc-poster')]//img|attr_src"`
 
 	//Links to movies/show the person is known for.
 	KnownFor types.Links `xpath:"//div[@data-testid='Filmography']//div[@data-testid='nm_flmg_kwn_for']//div[ends-with(@data-testid, 'container')]|linklist"`
@@ -88,7 +88,7 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 		}
 	}
 
-	url := personBaseUrl + id
+	url := personBaseUrl + "/" + id
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

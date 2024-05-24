@@ -23,3 +23,6 @@ go.work.sum
 
 # Cache files
 imdb/.imdbcache/
+
+#Sample output files
+*.html

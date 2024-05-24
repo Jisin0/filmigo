@@ -8,6 +8,10 @@ import (
 	"github.com/Jisin0/filmigo/cache"
 )
 
+const (
+	baseImdbURL = "https://imdb.com"
+)
+
 // ImdbClient type provides all imdb related operations. Use imdb.NewClient to create one.
 type ImdbClient struct {
 

@@ -6,8 +6,10 @@ import (
 	"github.com/Jisin0/filmigo/imdb"
 )
 
+var searchQuery string = "mad"
+
 func TestSearchTitles(t *testing.T) {
-	res, err := imdb.SearchTitles("stranger")
+	res, err := c.SearchTitles(searchQuery, &imdb.SearchConfigs{IncludeVideos: true})
 	if err != nil {
 		t.Error(err)
 		t.Failed()
@@ -18,7 +20,18 @@ func TestSearchTitles(t *testing.T) {
 }
 
 func TestSearchAll(t *testing.T) {
-	res, err := imdb.SearchAll("mad")
+	res, err := c.SearchAll(searchQuery, &imdb.SearchConfigs{IncludeVideos: true})
+	if err != nil {
+		t.Error(err)
+		t.Failed()
+	}
+
+	t.Logf("%+v", res)
+
+}
+
+func TestSearchNames(t *testing.T) {
+	res, err := c.SearchNames(searchQuery, &imdb.SearchConfigs{IncludeVideos: true})
 	if err != nil {
 		t.Error(err)
 		t.Failed()

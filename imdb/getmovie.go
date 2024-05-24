@@ -13,7 +13,7 @@ import (
 
 const (
 	//path for homepage of any imdb movie/show
-	movieBaseUrl = "https://imdb.com/title/"
+	movieBaseUrl = baseImdbURL + "/title"
 )
 
 // Full movie object, contains data about a movie/show only available after scraping it's data with imdb.GetMovie().
@@ -34,16 +34,16 @@ type Movie struct {
 	Votes string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']/a/span/div/div[2]/div[3]"`
 
 	//The directors of the movie
-	Directors types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Director')]/../div|linklist"`
+	Directors types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Director')]/../div"`
 
 	//The writers of the movie
-	Writers types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Writer')]/../div|linklist"`
+	Writers types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Writer')]/../div"`
 
 	//The main stars of the movie
-	Stars types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Star')]/../div|linklist"`
+	Stars types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Star')]/../div"`
 
 	//Genres of the movie
-	Genres types.Links `xpath:"//div[@data-testid='genres']/div[2]|linklist"`
+	Genres types.Links `xpath:"//div[@data-testid='genres']/div[2]"`
 
 	//A short plot of the movie in a few lines
 	Plot string `xpath:"/html/body//main//p[@data-testid='plot']//span[@data-testid='plot-xl']"`
@@ -55,19 +55,19 @@ type Movie struct {
 	Origin string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-origin']/div//a"`
 
 	//Official sites related to the movie/show
-	OfficialSites types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='details-officialsites']/div/ul|linklist"`
+	OfficialSites types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='details-officialsites']/div/ul"`
 
 	//Languages in which the movie/show is available in
-	Languages types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-languages']/div/ul|linklist"`
+	Languages types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-languages']/div/ul"`
 
 	//A string with details about the release includind date and country
 	Aka string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-akas']//span"`
 
 	//Locations at which the movie/show was filmed at
-	Locations types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-filminglocations']/div/ul|linklist"`
+	Locations types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-filminglocations']/div/ul"`
 
 	//Companies which produced the movie
-	Companies types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-companies']/div/ul|linklist"`
+	Companies types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-companies']/div/ul"`
 
 	//Runtime of the move
 	Runtime string `xpath:"//div[@data-testid='title-techspecs-section']/ul/li[@data-testid='title-techspec_runtime']/div"`
@@ -90,7 +90,7 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	}
 
 	//Get the webpage
-	url := movieBaseUrl + id
+	url := movieBaseUrl + "/" + id
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request")
