@@ -8,7 +8,7 @@ import (
 )
 
 func TestAdvancedSearchTitle(t *testing.T) {
-	r, err := c.AdvancedSearchTitle(&imdb.AdvancedSearchTitleOpts{Genres: []string{constants.TitleGenreAction}})
+	r, err := c.AdvancedSearchTitle(&imdb.AdvancedSearchTitleOpts{Genres: []string{constants.TitleGenreAction}, ExtraParams: map[string]any{"plot": "guns"}})
 	if err != nil {
 		t.Error(err)
 	}

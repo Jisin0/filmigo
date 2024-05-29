@@ -1,5 +1,6 @@
 // (c) Jisin0
 // Imdb client and configurations.
+
 package imdb
 
 import (
@@ -14,11 +15,15 @@ const (
 
 // ImdbClient type provides all imdb related operations. Use imdb.NewClient to create one.
 type ImdbClient struct {
+	disabledCaching bool
+	cache           *ImdbCache
+}
 
-	// Disabling cache will affect performace drastically and is not recommended.
+// Options to configure the imdb client's behaviour.
+type ImdbClientOpts struct {
+
+	// Set this to true to disable caching results.
 	DisableCaching bool
-
-	cache *ImdbCache
 }
 
 const (
@@ -28,16 +33,23 @@ const (
 	defaultCachePath = "./.imdbcache/"
 )
 
-// NewClient returns a new empty client use SetX functions to configure the client.
-func NewClient() *ImdbClient {
+// NewClient returns a new client with given configs.
+func NewClient(o ...ImdbClientOpts) *ImdbClient {
+	var disableCaching bool
+
+	if len(o) > 0 {
+		disableCaching = o[0].DisableCaching
+	}
+
 	return &ImdbClient{
-		cache: NewImdbCache(defaultCacheExpiration),
+		disabledCaching: disableCaching,
+		cache:           NewImdbCache(defaultCacheExpiration),
 	}
 }
 
 // Set DisableCaching to true only if you need to. It's highly unrecommended as data provided by imdb is pretty persistent.
 func (c *ImdbClient) SetDisableCaching(b bool) {
-	c.DisableCaching = b
+	c.disabledCaching = b
 }
 
 // Modify the cache duration of imdb data.

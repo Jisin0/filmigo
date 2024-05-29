@@ -1,0 +1,36 @@
+query GetSuggestedTitles($country: Country!, $language: Language!, $first: Int!, $filter: TitleFilter) {
+	popularTitles(country: $country, first: $first, filter: $filter) {
+		edges {
+			node {
+				...SuggestedTitle
+				__typename
+			}
+			__typename
+		}
+		__typename
+	}
+}
+
+fragment SuggestedTitle on MovieOrShow {
+	id
+	objectType
+	objectId
+	content(country: $country, language: $language) {
+		fullPath
+		title
+		originalTitle
+		originalReleaseYear
+		posterUrl
+		fullPath
+		shortDescription
+		isReleased
+		genres{
+			shortName
+		}
+		backdrops {
+			backdropUrl
+		}
+		__typename
+	}
+	__typename
+}

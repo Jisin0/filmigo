@@ -1,5 +1,6 @@
 // (c) Jisin0
 // File contains functions for scraping movie data from it's imdb page.
+
 package imdb
 
 import (
@@ -83,7 +84,7 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	var movie Movie
 
 	//Check cache for existing first
-	if !c.DisableCaching {
+	if !c.disabledCaching {
 		if err := c.cache.MovieCache.Load(id, &movie); err == nil {
 			return &movie, nil
 		}
@@ -121,7 +122,7 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	movie = encode.Xpath(doc, movie).(Movie)
 
 	//Cache data for next time
-	if !c.DisableCaching {
+	if !c.disabledCaching {
 		c.cache.MovieCache.Save(id, movie)
 	}
 

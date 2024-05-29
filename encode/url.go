@@ -14,11 +14,11 @@ import (
 var searchRangeType = reflect.TypeOf(types.SearchRange{})
 
 // UrlParams function to encode struct fields into URL parameters
-func UrlParams(params interface{}) (string, error) {
+func UrlParams(params interface{}) (url.Values, error) {
 
 	v := reflect.ValueOf(params)
 	if v.Kind() != reflect.Struct {
-		return "", fmt.Errorf("UrlParams: input is not a struct")
+		return url.Values{}, fmt.Errorf("UrlParams: input is not a struct")
 	}
 
 	values := url.Values{}
@@ -28,7 +28,7 @@ func UrlParams(params interface{}) (string, error) {
 		field := v.Field(i)
 		tag := t.Field(i).Tag.Get("url")
 		if tag == "" {
-			tag = strings.ToLower(t.Field(i).Name)
+			continue
 		}
 
 		// Handle slices separately
@@ -53,5 +53,14 @@ func UrlParams(params interface{}) (string, error) {
 		}
 	}
 
-	return values.Encode(), nil
+	return values, nil
+}
+
+// Function to encode a map into URL parameters.
+func UrlMapParams(params map[string]any, existingValues url.Values) url.Values {
+	for key, value := range params {
+		// Convert the value to string using fmt.Sprint to handle different types
+		existingValues.Add(key, fmt.Sprint(value))
+	}
+	return existingValues
 }

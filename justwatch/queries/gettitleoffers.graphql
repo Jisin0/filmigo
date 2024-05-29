@@ -1,0 +1,76 @@
+
+query GetTitleOffers($nodeId: ID!, $country: Country!, $language: Language!, $filterFlatrate: OfferFilter!, $filterBuy: OfferFilter!, $filterRent: OfferFilter!, $filterFree: OfferFilter!, $platform: Platform! = WEB) {
+	node(id: $nodeId) {
+	  id
+	  __typename
+	  ... on MovieOrShowOrSeasonOrEpisode {
+		offerCount(country: $country, platform: $platform)
+		maxOfferUpdatedAt(country: $country, platform: $platform)
+		flatrate: offers(
+		  country: $country
+		  platform: $platform
+		  filter: $filterFlatrate
+		) {
+		  ...TitleOffer
+		  __typename
+		}
+		buy: offers(country: $country, platform: $platform, filter: $filterBuy) {
+		  ...TitleOffer
+		  __typename
+		}
+		rent: offers(country: $country, platform: $platform, filter: $filterRent) {
+		  ...TitleOffer
+		  __typename
+		}
+		free: offers(country: $country, platform: $platform, filter: $filterFree) {
+		  ...TitleOffer
+		  __typename
+		}
+		fast: offers(
+		  country: $country
+		  platform: $platform
+		  filter: {monetizationTypes: [FAST], bestOnly: true}
+		) {
+		  ...FastOffer
+		  __typename
+		}
+		__typename
+	  }
+	}
+  }
+  
+  fragment TitleOffer on Offer {
+	id
+	presentationType
+	monetizationType
+	retailPrice(language: $language)
+	retailPriceValue
+	currency
+	lastChangeRetailPriceValue
+	type
+	package {
+	  id
+	  packageId
+	  clearName
+	  technicalName
+	  icon(profile: S100)
+	  __typename
+	}
+	standardWebURL
+	elementCount
+	availableTo
+	deeplinkRoku: deeplinkURL(platform: ROKU_OS)
+	subtitleLanguages
+	videoTechnology
+	audioTechnology
+	audioLanguages
+	__typename
+  }
+  
+  fragment FastOffer on Offer {
+	...TitleOffer
+	availableTo
+	availableFromTime
+	availableToTime
+	__typename
+  }

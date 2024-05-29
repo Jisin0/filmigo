@@ -1,9 +1,9 @@
 // (c)Jisin0
 // Functions and types to scrape data of a person.
+
 package imdb
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Jisin0/filmigo/encode"
@@ -82,7 +82,7 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 
 	var person Person
 
-	if !c.DisableCaching {
+	if !c.disabledCaching {
 		if err := c.cache.PersonCache.Load(id, &person); err == nil {
 			return &person, nil
 		}
@@ -121,11 +121,8 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 	person = encode.Xpath(doc, person).(Person)
 
 	//Cache data for next time
-	if !c.DisableCaching {
-		err := c.cache.PersonCache.Save(id, person)
-		if err != nil {
-			fmt.Println(err)
-		}
+	if !c.disabledCaching {
+		c.cache.PersonCache.Save(id, person)
 	}
 
 	resp.Body.Close()

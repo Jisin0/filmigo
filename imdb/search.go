@@ -1,11 +1,15 @@
 // (c) Jisin0
 // Search via the official api.
+
 package imdb
 
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"regexp"
+	"strings"
 
 	"github.com/go-faster/errors"
 )
@@ -19,7 +23,7 @@ const (
 // Search Results returned from eith SearchTitles or SearchAll methods.
 type SearchResults struct {
 	// List of results.
-	Results []SearchResult `json:"d"`
+	Results []*SearchResult `json:"d"`
 	// The query string.
 	Query string `json:"q"`
 	// Unknown. Could be some version code or used for pagination, every result has this field.
@@ -136,4 +140,42 @@ func (*ImdbClient) doSearch(baseUrl string, query string, c ...*SearchConfigs) (
 
 	return &results, nil
 
+}
+
+const (
+	ResultTypeTitle = "title" // result type of movies/shows
+	ResultTypeName  = "name"  // result type for people
+	ResultTypeOther = "other" // other result types (url path for promotions)
+)
+
+var (
+	resultTypeTitleRegex = regexp.MustCompile(`^tt\d+`)
+	resultTypeNameRegex  = regexp.MustCompile(`^nm\d+`)
+)
+
+// Returns the type of search result returned possible values are "title", "name" and "other".
+func (s *SearchResult) GetType() string {
+	id := s.Id
+
+	// url path is returned for promotional items.
+	if strings.HasPrefix(id, "/") {
+		return ResultTypeOther
+	} else if resultTypeTitleRegex.MatchString(id) {
+		return ResultTypeTitle
+	} else if resultTypeNameRegex.MatchString(id) {
+		return ResultTypeName
+	} else {
+		log.Println("imdb.search unknown id type : ", id)
+		return ResultTypeOther
+	}
+}
+
+// Checks wether result type is a title i.e movies/shows.
+func (s *SearchResult) IsTitle() bool {
+	return resultTypeTitleRegex.MatchString(s.Id)
+}
+
+// Checks wether result type is a name i.e a person.
+func (s *SearchResult) IsName() bool {
+	return resultTypeNameRegex.MatchString(s.Id)
 }

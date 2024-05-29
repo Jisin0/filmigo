@@ -14,7 +14,7 @@ var c *imdb.ImdbClient = imdb.NewClient()
 
 // Gets the html content returned for a webpage using basic configs and writes to a html file
 func TestGetWebpage(t *testing.T) {
-	url := "https://www.imdb.com/search/name/?adult=include"
+	url := "https://www.justwatch.com/in/movie/chemmeen"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

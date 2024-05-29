@@ -1,5 +1,6 @@
 // (c) Jisin0
 // Types and methods for advanced search.
+
 package imdb
 
 import (
@@ -108,6 +109,9 @@ type AdvancedSearchTitleOpts struct {
 
 	// AdultTitles: Set value to constants.StringInclude to include adult titles
 	AdultTitles string `url:"adult"`
+
+	// Additional url parameters to be passed along with the request.
+	ExtraParams map[string]any
 }
 
 // Single result from the AdvancedSearchTitle result list.
@@ -134,7 +138,9 @@ type AdvancedSearchTitleResult struct {
 func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*AdvancedSearchTitleResult, error) {
 
 	urlParams, _ := encode.UrlParams(*opts)
-	fullURL := fmt.Sprintf("%s?%s", advancedSearchTitleURL, urlParams)
+	urlParams = encode.UrlMapParams(opts.ExtraParams, urlParams)
+
+	fullURL := fmt.Sprintf("%s?%s", advancedSearchTitleURL, urlParams.Encode())
 
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
@@ -258,6 +264,9 @@ type AdvancedSearchNameOpts struct {
 
 	// AdultNames: Set value to constants.StringInclude to include stars in adult titles.
 	AdultNames string `url:"adult"`
+
+	// Additional url parameters to be passed along with the request.
+	ExtraParams map[string]any
 }
 
 // Single results item from an AdvancedSearchName results list.
@@ -284,7 +293,9 @@ type AdvacedSearchNameResult struct {
 func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedSearchNameResult, error) {
 
 	urlParams, _ := encode.UrlParams(*opts)
-	fullURL := fmt.Sprintf("%s?%s", advancedSearchNameURL, urlParams)
+	urlParams = encode.UrlMapParams(opts.ExtraParams, urlParams)
+
+	fullURL := fmt.Sprintf("%s?%s", advancedSearchNameURL, urlParams.Encode())
 
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
