@@ -10,6 +10,7 @@ import (
 	"github.com/Jisin0/filmigo/types"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-faster/errors"
+	"golang.org/x/net/html"
 )
 
 const (
@@ -101,26 +102,10 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
 	//Get the webpage
 	url := movieBaseUrl + "/" + id
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to create request")
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
-	req.Header.Set("languages", "en-us,en;q=0.5")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to make request")
-	}
 
-	if resp.StatusCode == 404 {
-		return nil, errors.Errorf("movie/show with id %s was not not found", id)
-	} else if resp.StatusCode != 200 {
-		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
-	}
-
-	doc, err := htmlquery.Parse(resp.Body)
+	doc, err := doRequest(url)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse document")
+		return nil, err
 	}
 
 	movie = Movie{
@@ -135,7 +120,34 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 		c.cache.MovieCache.Save(id, movie)
 	}
 
-	resp.Body.Close()
-
 	return &movie, nil
+}
+
+// executes a get request to given url and parses the response body.
+func doRequest(url string) (*html.Node, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create request")
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
+	req.Header.Set("languages", "en-us,en;q=0.5")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make request")
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+		return nil, errors.Errorf("movie/person was not not found")
+	} else if resp.StatusCode != 200 {
+		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
+	}
+
+	doc, err := htmlquery.Parse(resp.Body)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to parse document")
+	}
+
+	return doc, nil
 }

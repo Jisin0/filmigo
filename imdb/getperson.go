@@ -4,11 +4,8 @@
 package imdb
 
 import (
-	"net/http"
-
 	"github.com/Jisin0/filmigo/encode"
 	"github.com/Jisin0/filmigo/types"
-	"github.com/antchfx/htmlquery"
 	"github.com/go-faster/errors"
 )
 
@@ -96,27 +93,9 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 
 	url := personBaseUrl + "/" + id
 
-	req, err := http.NewRequest("GET", url, nil)
+	doc, err := doRequest(url)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create request")
-	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
-	req.Header.Set("languages", "en-us,en;q=0.5")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to make request")
-	}
-
-	//Return error on bas status codes
-	if resp.StatusCode == 404 {
-		return nil, errors.Errorf("movie/show with id %s was not not found", id)
-	} else if resp.StatusCode != 200 {
-		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
-	}
-
-	doc, err := htmlquery.Parse(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse document")
+		return nil, err
 	}
 
 	person = Person{
@@ -130,8 +109,6 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 	if !c.disabledCaching {
 		c.cache.PersonCache.Save(id, person)
 	}
-
-	resp.Body.Close()
 
 	return &person, nil
 
