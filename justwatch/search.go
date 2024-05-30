@@ -19,13 +19,13 @@ const (
 type SearchResults struct {
 	// List of results.
 	Results []struct {
-		TitlePreview `json:"node"`
+		*TitlePreview `json:"node"`
 	} `json:"edges"`
 }
 
 // Preview object with basic info about a movie/show from search results.
 type TitlePreview struct {
-	TitlePreviewContent `json:"content"`
+	*TitlePreviewContent `json:"content"`
 	// Justwatch id of the movie/show.
 	ID string `json:"id"`
 	// Type of title either MOVIE, SHOW or SHOW_EPISODE
@@ -137,4 +137,11 @@ func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions
 	}
 
 	return respData.S, nil
+}
+
+// FullTitle fetches the full data about the title from the api by it's JW Id.
+//
+// - client : Justwatch client to make the query through.
+func (t *TitlePreview) FullTitle(client *JustwatchClient) (*Title, error) {
+	return client.GetTitle(t.ID)
 }
