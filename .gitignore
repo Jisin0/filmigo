@@ -24,5 +24,8 @@ go.work.sum
 # Cache files
 imdb/.imdbcache/
 
-#Sample output files
+# Sample output files
 *.html
+
+# Api key files
+apikey.txt

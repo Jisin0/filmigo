@@ -3,6 +3,7 @@ package imdb_test
 import (
 	"testing"
 
+	"github.com/Jisin0/filmigo"
 	"github.com/Jisin0/filmigo/imdb"
 )
 
@@ -39,4 +40,20 @@ func TestSearchNames(t *testing.T) {
 
 	t.Logf("%+v", res)
 
+}
+
+func TestFullTitle(t *testing.T) {
+	r, e := c.SearchTitles(searchQuery)
+	if e != nil {
+		t.Error(e)
+		return
+	}
+
+	res, err := r.Results[0].FullTitle(c)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	filmigo.PrintJson(res, "  ")
 }
