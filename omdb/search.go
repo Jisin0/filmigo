@@ -168,3 +168,10 @@ func (s *SearchResult) NextPage(client *OmdbClient) (*SearchResult, error) {
 
 	return client.Search(s.Query, &SearchOpts{Page: s.Page + 1})
 }
+
+// GetFull Fetches the full data about the movie using the api.
+//
+// - client : Omdb client to use for the request.
+func (m *MoviePreview) GetFull(client *OmdbClient) (*Movie, error) {
+	return client.GetMovie(&GetMovieOpts{Id: m.ImdbId})
+}
