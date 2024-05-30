@@ -27,7 +27,7 @@ func TestGetTitle(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJson(r, "   ")
+	r.PrettyPrint()
 }
 
 func TestGetTitleOffers(t *testing.T) {

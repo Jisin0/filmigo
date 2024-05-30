@@ -28,6 +28,9 @@ type Movie struct {
 	//Full title of the movie
 	Title string `xpath:"//h1[@data-testid='hero__pageTitle']/span"`
 
+	//Year of release of the movie
+	Year string `xpath:"//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]"`
+
 	//Ratings of the movie in the format n/10
 	Rating string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']//div[@data-testid='hero-rating-bar__aggregate-rating__score']"`
 
@@ -49,7 +52,7 @@ type Movie struct {
 	//A short plot of the movie in a few lines
 	Plot string `xpath:"/html/body//main//p[@data-testid='plot']//span[@data-testid='plot-xl']"`
 
-	//A string with details about the release includind date and country
+	//A string with details about the release including date and country
 	Releaseinfo string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-releasedate']/div//a"`
 
 	//Origin of release, commonly the country
@@ -61,7 +64,7 @@ type Movie struct {
 	//Languages in which the movie/show is available in
 	Languages types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-languages']/div/ul"`
 
-	//A string with details about the release includind date and country
+	// Any alternative name of the movie.
 	Aka string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-akas']//span"`
 
 	//Locations at which the movie/show was filmed at

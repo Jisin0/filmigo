@@ -41,7 +41,7 @@ type UrlDetails struct {
 type Title struct {
 	// Justwatch id of the title. for ex: ts20233.
 	Id string `json:"id,omitempty"`
-	// Type of title either MOVIE, SHOW or SHOW_EPISODE.
+	// Type of title either MOVIE, SHOW, SHOW_SEASON or SHOW_EPISODE.
 	Type string `json:"objectType,omitempty"`
 	// Numeric id of the title for ex: ts20233 becomes 202333.
 	NumericId int `json:"objectId,omitempty"`
@@ -101,9 +101,9 @@ type Title struct {
 // Data about the actual content of the title like it's genres, poster, runtime etc.
 type TitleContent struct {
 	// Name of the title.
-	Name string `json:"title,omitempty"`
+	Title string `json:"title,omitempty"`
 	// Original name of the title.
-	OriginalName string `json:"originalTitle,omitempty"`
+	OriginalTitle string `json:"originalTitle,omitempty"`
 	// Url path of the title.
 	UrlPath string `json:"fullPath,omitempty"`
 	// A short description of the title .

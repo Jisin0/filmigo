@@ -47,7 +47,7 @@ type Movie struct {
 	Rated string `json:"rated"`
 
 	// Date on which the movie was released in the format 01 January 1950.
-	Relased string `json:"released"`
+	Released string `json:"released"`
 
 	// Runtime/Duration of the movie in minutes for ex. 120 min.
 	Runtime string `json:"runtime"`

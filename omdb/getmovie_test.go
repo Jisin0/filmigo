@@ -16,5 +16,5 @@ func TestGetMovie(t *testing.T) {
 		t.Error(e)
 	}
 
-	t.Logf("%+v", r)
+	r.PrettyPrint()
 }
