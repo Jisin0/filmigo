@@ -66,6 +66,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	  offers(country: $country, platform: $platform) {
 		monetizationType
 		elementCount
+        standardWebURL
 		package {
 		  id
 		  packageId
@@ -552,6 +553,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		  offers(country: $country, platform: $platform) {
 			monetizationType
 			presentationType
+            standardWebURL
 			package {
 			  id
 			  packageId

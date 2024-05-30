@@ -25,12 +25,12 @@ type GetTitleOptions struct {
 // Get the full details of a title using it's justwatch id.
 //
 // - id : The unique justwatch id of the entity.
-func GetTitle(id string, opts ...*GetTitleOptions) (*Title, error) {
+func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title, error) {
 
 	request := graphql.NewRequest(getTitleQuery)
 
-	var language = defaultLanguageCode
-	var country = defaultCountryCode
+	var language = c.LangCode
+	var country = c.Country
 	var episodeMaxLimit = 20
 
 	// Custom options
@@ -84,7 +84,7 @@ func GetTitle(id string, opts ...*GetTitleOptions) (*Title, error) {
 // Get the full details of a title using it's url path.
 //
 // - path : Url path returned from a search result or the justwatch link
-func GetTitleFromUrl(path string, opts ...*GetTitleOptions) (*UrlDetails, error) {
+func (c *JustwatchClient) GetTitleFromUrl(path string, opts ...*GetTitleOptions) (*UrlDetails, error) {
 
 	request := graphql.NewRequest(getTitleFromUrlQuery)
 
@@ -103,8 +103,8 @@ func GetTitleFromUrl(path string, opts ...*GetTitleOptions) (*UrlDetails, error)
 		fmt.Println(path)
 	}
 
-	var language = defaultLanguageCode
-	var country = defaultCountryCode
+	var language = c.LangCode
+	var country = c.Country
 	var episodeMaxLimit = 20
 
 	// Custom options
@@ -157,12 +157,12 @@ func GetTitleFromUrl(path string, opts ...*GetTitleOptions) (*UrlDetails, error)
 // Get the offers available for a url using it's Justwatch Id.
 //
 // - id: Justwatch id of the title.
-func GetTitleOffers(id string, opts ...*GetTitleOptions) (*GetTitleOffersResult, error) {
+func (c *JustwatchClient) GetTitleOffers(id string, opts ...*GetTitleOptions) (*GetTitleOffersResult, error) {
 
 	request := graphql.NewRequest(getTitleOffersQuery)
 
-	var language = defaultLanguageCode
-	var country = defaultCountryCode
+	var language = c.LangCode
+	var country = c.Country
 
 	// Custom options
 	if len(opts) > 0 {

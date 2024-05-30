@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/Jisin0/filmigo"
-	"github.com/Jisin0/filmigo/justwatch"
 )
 
 const (
@@ -12,7 +11,7 @@ const (
 )
 
 func TestGetTitleFromUrl(t *testing.T) {
-	r, e := justwatch.GetTitleFromUrl("justwatch.com/US/tv-show/rick-and-morty")
+	r, e := client.GetTitleFromUrl("justwatch.com/US/tv-show/rick-and-morty")
 	if e != nil {
 		t.Error(e)
 		return
@@ -22,7 +21,7 @@ func TestGetTitleFromUrl(t *testing.T) {
 }
 
 func TestGetTitle(t *testing.T) {
-	r, e := justwatch.GetTitle(rickAndMortyId)
+	r, e := client.GetTitle(rickAndMortyId)
 	if e != nil {
 		t.Error(e)
 		return
@@ -32,7 +31,7 @@ func TestGetTitle(t *testing.T) {
 }
 
 func TestGetTitleOffers(t *testing.T) {
-	r, e := justwatch.GetTitleOffers(rickAndMortyId)
+	r, e := client.GetTitleOffers(rickAndMortyId)
 	if e != nil {
 		t.Error(e)
 		return

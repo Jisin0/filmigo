@@ -75,11 +75,11 @@ type SearchOptions struct {
 //
 // - searchQuery: Keyword or query to search for.
 // - opts: Additional options for the request.
-func SearchTitle(searchQuery string, opts ...*SearchOptions) (*SearchResults, error) {
+func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions) (*SearchResults, error) {
 
 	var limit int = 5
-	var country string = defaultCountryCode
-	var language string = defaultLanguageCode
+	var country string = c.Country
+	var language string = c.LangCode
 	var noTitlesWithoutUrl bool
 
 	if len(opts) > 0 {
