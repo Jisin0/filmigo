@@ -81,6 +81,12 @@ type Movie struct {
 // Returns an error on failed requests or if the movie wasn't found.
 func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
+	// Verify id or extract it if it's in a url
+	id = resultTypeTitleRegex.FindString(id)
+	if id == "" {
+		return nil, errors.New("imdb.getmovie id did not match regex")
+	}
+
 	var movie Movie
 
 	//Check cache for existing first

@@ -4,6 +4,7 @@
 package imdb
 
 import (
+	"regexp"
 	"time"
 
 	"github.com/Jisin0/filmigo/cache"
@@ -11,6 +12,11 @@ import (
 
 const (
 	baseImdbURL = "https://imdb.com"
+)
+
+var (
+	resultTypeTitleRegex = regexp.MustCompile(`^tt\d+`)
+	resultTypeNameRegex  = regexp.MustCompile(`^nm\d+`)
 )
 
 // ImdbClient type provides all imdb related operations. Use imdb.NewClient to create one.

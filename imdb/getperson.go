@@ -80,6 +80,12 @@ type Person struct {
 // Returns an error on failed requests or if the person wasn't found.
 func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 
+	// Verify id or extract it if it's in a url
+	id = resultTypeNameRegex.FindString(id)
+	if id == "" {
+		return nil, errors.New("imdb.getperson id did not match regex")
+	}
+
 	var person Person
 
 	if !c.disabledCaching {

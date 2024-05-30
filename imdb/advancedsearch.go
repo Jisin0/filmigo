@@ -21,28 +21,6 @@ const (
 	advancedSearchNameURL  = baseAdvancedSearchURL + "name/"
 )
 
-// // Type for storing data from adbanced search page.
-// type AdvancedSearchItem struct {
-// 	// Index number of the item.
-// 	Index int
-// 	// Title: Name of the movie/show or person.
-// 	Title string
-// 	// Image: Poster image of a title or profile image of a person.
-// 	Image string
-// 	// Link: Link to the title or person's imdb page.
-// 	Link string
-// 	// Metadata: Metadata for titles containing the year of release, duration and us certificate.
-// 	Metadata []string
-// 	// Rating: A string containing rating info for ex: 7.5 (35K).
-// 	Rating string
-// 	// Description: A description of the title or person.
-// 	Description string
-// 	// Top title of a actor/actress. Only for people/names.
-// 	TopTitle types.Link
-// 	// Roles: Roles taken by a person for ex: Director, Actress, Producer.
-// 	Roles []string
-// }
-
 // Options for the AdvancedSearchTitle query see https://imdb.com/search/title to see the list and syntax for each option.
 type AdvancedSearchTitleOpts struct {
 
@@ -233,6 +211,13 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 	return results, nil
 }
 
+// FullTitle returns the full data about a title scraped from it's imdb page.
+//
+// - client : Client to make imdb requests through.
+func (s *AdvancedSearchTitleResult) FullTitle(client *ImdbClient) (*Movie, error) {
+	return client.GetMovie(s.Link)
+}
+
 // Options for the AdvancedSearchName query see https://imdb.com/search/title to see the list and syntax for each option.
 type AdvancedSearchNameOpts struct {
 
@@ -397,4 +382,11 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 	}
 
 	return results, nil
+}
+
+// FullPerson returns the full data about a title scraped from it's imdb page.
+//
+// - client : Client to make imdb requests through.
+func (s *AdvancedSearchTitleResult) FullPerson(client *ImdbClient) (*Person, error) {
+	return client.GetPerson(s.Link)
 }

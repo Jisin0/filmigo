@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"regexp"
 	"strings"
 
 	"github.com/go-faster/errors"
@@ -148,11 +147,6 @@ const (
 	ResultTypeOther = "other" // other result types (url path for promotions)
 )
 
-var (
-	resultTypeTitleRegex = regexp.MustCompile(`^tt\d+`)
-	resultTypeNameRegex  = regexp.MustCompile(`^nm\d+`)
-)
-
 // Returns the type of search result returned possible values are "title", "name" and "other".
 func (s *SearchResult) GetType() string {
 	id := s.Id
@@ -170,12 +164,26 @@ func (s *SearchResult) GetType() string {
 	}
 }
 
+// Returns the full data about a title scraped from it's imdb page.
+//
+// - client : The imdb client to use for the request.
+func (s *SearchResult) FullTitle(client *ImdbClient) (*Movie, error) {
+	return client.GetMovie(s.Id)
+}
+
+// Returns the full data about a person scraped from their imdb page.
+//
+// - client : The imdb client to use for the request.
+func (s *SearchResult) FullPerson(client *ImdbClient) (*Person, error) {
+	return client.GetPerson(s.Id)
+}
+
 // Checks wether result type is a title i.e movies/shows.
 func (s *SearchResult) IsTitle() bool {
 	return resultTypeTitleRegex.MatchString(s.Id)
 }
 
-// Checks wether result type is a name i.e a person.
-func (s *SearchResult) IsName() bool {
+// Checks wether result type is a person.
+func (s *SearchResult) IsPerson() bool {
 	return resultTypeNameRegex.MatchString(s.Id)
 }
