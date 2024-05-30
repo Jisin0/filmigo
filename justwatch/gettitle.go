@@ -52,7 +52,7 @@ func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title,
 	}
 
 	// Set the variables
-	request.Var("entityID", id)
+	request.Var("entityId", id)
 	request.Var("fullPath", "/")
 	request.Var("country", country)
 	request.Var("language", language)
@@ -63,7 +63,7 @@ func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title,
 		"placement":               "DETAIL_PAGE",
 		"country":                 "US",
 		"language":                "en",
-		"appID":                   "3.8.2-webapp#62adb00",
+		"appId":                   "3.8.2-webapp#62adb00",
 		"platform":                "WEB",
 		"supportedFormats":        []string{"IMAGE", "VIDEO"},
 		"supportedObjectTypes":    []string{"MOVIE", "SHOW", "GENERIC_TITLE_LIST", "SHOW_SEASON"},
@@ -137,7 +137,7 @@ func (c *JustwatchClient) GetTitleFromURL(path string, opts ...*GetTitleOptions)
 		"placement":               "DETAIL_PAGE",
 		"country":                 "US",
 		"language":                "en",
-		"appID":                   "3.8.2-webapp", // works even if omitted
+		"appId":                   "3.8.2-webapp", // works even if omitted
 		"platform":                "WEB",
 		"supportedFormats":        []string{"IMAGE", "VIDEO"},
 		"supportedObjectTypes":    []string{"MOVIE", "SHOW", "GENERIC_TITLE_LIST", "SHOW_SEASON"},
@@ -181,7 +181,7 @@ func (c *JustwatchClient) GetTitleOffers(id string, opts ...*GetTitleOptions) (*
 	}
 
 	// Set the variables
-	request.Var("nodeID", id)
+	request.Var("nodeId", id)
 	request.Var("country", country)
 	request.Var("language", language)
 	request.Var("platform", "WEB")

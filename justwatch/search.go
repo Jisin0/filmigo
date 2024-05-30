@@ -30,7 +30,7 @@ type TitlePreview struct {
 	ID string `json:"id"`
 	// Type of title either MOVIE, SHOW or SHOW_EPISODE
 	Type     string `json:"objectType"`
-	ObjectID int    `json:"objectID"`
+	ObjectID int    `json:"objectId"`
 }
 
 type TitlePreviewContent struct {
@@ -48,7 +48,7 @@ type TitlePreviewContent struct {
 	ShortDescription string `json:"shortDescription"`
 	// URL template for poster images.
 	// Use the FullURL() or ThumbURL() methods to get full urls.
-	Poster PosterURL `json:"posterURL"`
+	Poster PosterURL `json:"posterUrl"`
 	// Raw genres types obtained from juswatch.
 	// Use ToString()      to concatenate the full genre names into a string.
 	// Use ToSlice()       to output the full genre names into a slice.
@@ -108,7 +108,7 @@ func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions
 		"first":    limit,
 		"filter": map[string]interface{}{
 			"searchQuery":             searchQuery,
-			"includeTitlesWithoutURL": !noTitlesWithoutURL,
+			"includeTitlesWithoutUrl": !noTitlesWithoutURL,
 		},
 	}
 
