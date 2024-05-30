@@ -8,45 +8,43 @@ import (
 )
 
 const (
-	imageBaseUrl = "https://images.justwatch.com"
-
-	posterSizeLarge  = "s592"
-	posterSizeMedium = "s332"
-	posterSizeSmall  = "s166"
-
+	imageBaseURL       = "https://images.justwatch.com"
+	posterSizeLarge    = "s592"
+	posterSizeMedium   = "s332"
+	posterSizeSmall    = "s166"
 	backdropSizeLarge  = "s1920"
 	backdropSizeMedium = "s1440"
 )
 
 // Poster url format.
-type PosterUrl string
+type PosterURL string
 
 // Get the full image url for the maximum size of the image.
-func (p PosterUrl) FullUrl() string {
+func (p PosterURL) FullURL() string {
 	// trim off the extension.
 	poster := strings.TrimSuffix(string(p), ".{format}")
-	return imageBaseUrl + strings.Replace(poster, "{profile}", posterSizeLarge, 1)
+	return imageBaseURL + strings.Replace(poster, "{profile}", posterSizeLarge, 1)
 }
 
 // Get the full image url for a thumbnail size of the image.
-func (p PosterUrl) ThumbUrl() string {
+func (p PosterURL) ThumbURL() string {
 	// trim off the extension.
 	poster := strings.TrimSuffix(string(p), ".{format}")
-	return imageBaseUrl + strings.Replace(poster, "{profile}", posterSizeSmall, 1)
+	return imageBaseURL + strings.Replace(poster, "{profile}", posterSizeSmall, 1)
 }
 
 // Backdrop image data.
-// Use the FullUrl() method to get the full formatted url.
+// Use the FullURL() method to get the full formatted url.
 type Backdrop struct {
 	// File path format to the backdrop image.
-	BackdropUrlFormat string `json:"backdropUrl"`
+	BackdropURLFormat string `json:"backdropURL"`
 }
 
 // Get the full image url for the maximum size of the image.
-func (b Backdrop) FullUrl() string {
+func (b Backdrop) FullURL() string {
 	// trim off the extension.
-	url := strings.TrimSuffix(string(b.BackdropUrlFormat), ".{format}")
-	return imageBaseUrl + strings.Replace(url, "{profile}", backdropSizeLarge, 1)
+	url := strings.TrimSuffix(b.BackdropURLFormat, ".{format}")
+	return imageBaseURL + strings.Replace(url, "{profile}", backdropSizeLarge, 1)
 }
 
 // Full name for shortname of genres from the api.
@@ -96,7 +94,7 @@ func (gs *Genres) ToShortList() []string {
 	return a
 }
 
-// ToString generates a string with the full name sof genres seperated with given seperator.
+// ToString generates a string with the full name sof genres separated with given separator.
 func (gs *Genres) ToString(sep string) string {
 	l := gs.ToList()
 	return strings.Join(l, sep)

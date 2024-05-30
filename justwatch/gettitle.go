@@ -12,7 +12,7 @@ import (
 	"github.com/machinebox/graphql"
 )
 
-// Options for GetTitleUrl() operation.
+// Options for GetTitleURL() operation.
 type GetTitleOptions struct {
 	// Country code of country of request. for ex: US.
 	Country string
@@ -26,12 +26,13 @@ type GetTitleOptions struct {
 //
 // - id : The unique justwatch id of the entity.
 func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title, error) {
-
 	request := graphql.NewRequest(getTitleQuery)
 
-	var language = c.LangCode
-	var country = c.Country
-	var episodeMaxLimit = 20
+	var (
+		language        = c.LangCode
+		country         = c.Country
+		episodeMaxLimit = 20
+	)
 
 	// Custom options
 	if len(opts) > 0 {
@@ -51,7 +52,7 @@ func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title,
 	}
 
 	// Set the variables
-	request.Var("entityId", id)
+	request.Var("entityID", id)
 	request.Var("fullPath", "/")
 	request.Var("country", country)
 	request.Var("language", language)
@@ -62,7 +63,7 @@ func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title,
 		"placement":               "DETAIL_PAGE",
 		"country":                 "US",
 		"language":                "en",
-		"appId":                   "3.8.2-webapp#62adb00",
+		"appID":                   "3.8.2-webapp#62adb00",
 		"platform":                "WEB",
 		"supportedFormats":        []string{"IMAGE", "VIDEO"},
 		"supportedObjectTypes":    []string{"MOVIE", "SHOW", "GENERIC_TITLE_LIST", "SHOW_SEASON"},
@@ -73,39 +74,40 @@ func (c *JustwatchClient) GetTitle(id string, opts ...*GetTitleOptions) (*Title,
 	var response struct {
 		Data Title `json:"node"`
 	}
+
 	if err := graphQLClient.Run(context.Background(), request, &response); err != nil {
 		return nil, err
 	}
 
 	return &response.Data, nil
-
 }
 
 // Get the full details of a title using it's url path.
 //
-// - path : Url path returned from a search result or the justwatch link
-func (c *JustwatchClient) GetTitleFromUrl(path string, opts ...*GetTitleOptions) (*UrlDetails, error) {
+// - path : URL path returned from a search result or the justwatch link
+func (c *JustwatchClient) GetTitleFromURL(path string, opts ...*GetTitleOptions) (*URLDetails, error) {
+	request := graphql.NewRequest(getTitleFromURLQuery)
 
-	request := graphql.NewRequest(getTitleFromUrlQuery)
-
-	//Cleaup path
+	// Cleaup path
 	if strings.Contains(path, "justwatch.com") {
 		if !strings.HasPrefix(path, "https://") {
 			path = "https://" + path
 		}
 
-		parsedUrl, err := url.Parse(path)
+		parsedURL, err := url.Parse(path)
 		if err != nil {
 			return nil, err
 		}
 
-		path = parsedUrl.Path
+		path = parsedURL.Path
 		fmt.Println(path)
 	}
 
-	var language = c.LangCode
-	var country = c.Country
-	var episodeMaxLimit = 20
+	var (
+		language        = c.LangCode
+		country         = c.Country
+		episodeMaxLimit = 20
+	)
 
 	// Custom options
 	if len(opts) > 0 {
@@ -135,7 +137,7 @@ func (c *JustwatchClient) GetTitleFromUrl(path string, opts ...*GetTitleOptions)
 		"placement":               "DETAIL_PAGE",
 		"country":                 "US",
 		"language":                "en",
-		"appId":                   "3.8.2-webapp", // works even if ommited
+		"appID":                   "3.8.2-webapp", // works even if omitted
 		"platform":                "WEB",
 		"supportedFormats":        []string{"IMAGE", "VIDEO"},
 		"supportedObjectTypes":    []string{"MOVIE", "SHOW", "GENERIC_TITLE_LIST", "SHOW_SEASON"},
@@ -144,25 +146,26 @@ func (c *JustwatchClient) GetTitleFromUrl(path string, opts ...*GetTitleOptions)
 	})
 
 	var response struct {
-		Data UrlDetails `json:"urlV2"`
+		Data URLDetails `json:"urlV2"`
 	}
+
 	if err := graphQLClient.Run(context.Background(), request, &response); err != nil {
 		return nil, err
 	}
 
 	return &response.Data, nil
-
 }
 
-// Get the offers available for a url using it's Justwatch Id.
+// Get the offers available for a url using it's Justwatch ID.
 //
 // - id: Justwatch id of the title.
 func (c *JustwatchClient) GetTitleOffers(id string, opts ...*GetTitleOptions) (*GetTitleOffersResult, error) {
-
 	request := graphql.NewRequest(getTitleOffersQuery)
 
-	var language = c.LangCode
-	var country = c.Country
+	var (
+		language = c.LangCode
+		country  = c.Country
+	)
 
 	// Custom options
 	if len(opts) > 0 {
@@ -178,7 +181,7 @@ func (c *JustwatchClient) GetTitleOffers(id string, opts ...*GetTitleOptions) (*
 	}
 
 	// Set the variables
-	request.Var("nodeId", id)
+	request.Var("nodeID", id)
 	request.Var("country", country)
 	request.Var("language", language)
 	request.Var("platform", "WEB")
@@ -203,10 +206,10 @@ func (c *JustwatchClient) GetTitleOffers(id string, opts ...*GetTitleOptions) (*
 	var response struct {
 		Data GetTitleOffersResult `json:"node"`
 	}
+
 	if err := graphQLClient.Run(context.Background(), request, &response); err != nil {
 		return nil, err
 	}
 
 	return &response.Data, nil
-
 }

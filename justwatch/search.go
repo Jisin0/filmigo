@@ -1,4 +1,4 @@
-//(c) Jisin0
+// (c) Jisin0
 // Search for movies and shows using the JW graphql api.
 
 package justwatch
@@ -30,25 +30,25 @@ type TitlePreview struct {
 	ID string `json:"id"`
 	// Type of title either MOVIE, SHOW or SHOW_EPISODE
 	Type     string `json:"objectType"`
-	ObjectId int    `json:"objectId"`
+	ObjectID int    `json:"objectID"`
 }
 
 type TitlePreviewContent struct {
-	// Url path of the movie/show.
+	// Indicates wether the title is released.
+	IsReleased bool `json:"isReleased"`
+	// Year of release of the movie/show.
+	OriginalReleaseYear int `json:"originalReleaseYear"`
+	// URL path of the movie/show.
 	Path string `json:"fullPath"`
 	// Title of the movie/show.
 	Title string `json:"title"`
 	// Original title of the movie/show.
 	OriginalTitle string `json:"originalTitle"`
-	// Year of release of the movie/show.
-	OriginalReleaseYear int `json:"originalReleaseYear"`
-	// Url template for poster images.
-	// Use the FullUrl() or ThumbUrl() methods to get full urls.
-	Poster PosterUrl `json:"posterUrl"`
 	// A short description of the movie/show.
 	ShortDescription string `json:"shortDescription"`
-	// Indicates wether the title is released.
-	IsReleased bool `json:"isReleased"`
+	// URL template for poster images.
+	// Use the FullURL() or ThumbURL() methods to get full urls.
+	Poster PosterURL `json:"posterURL"`
 	// Raw genres types obtained from juswatch.
 	// Use ToString()      to concatenate the full genre names into a string.
 	// Use ToSlice()       to output the full genre names into a slice.
@@ -65,10 +65,10 @@ type SearchOptions struct {
 	Limit int
 	// Country code for the country on which results are based. for ex: GB for United Kingdom.
 	Country string
-	// Lnaguage code for results . for example en for English.
+	// Language code for results . for example en for English.
 	Language string
 	// Indicates wether titles without a url should not be returned.
-	NoTitlesWithoutUrl bool
+	NoTitlesWithoutURL bool
 }
 
 // SearchTitle function searches for title with simillar title using justwatch's api.
@@ -76,11 +76,12 @@ type SearchOptions struct {
 // - searchQuery: Keyword or query to search for.
 // - opts: Additional options for the request.
 func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions) (*SearchResults, error) {
-
-	var limit int = 5
-	var country string = c.Country
-	var language string = c.LangCode
-	var noTitlesWithoutUrl bool
+	var (
+		limit              = 5
+		country            = c.Country
+		language           = c.LangCode
+		noTitlesWithoutURL bool
+	)
 
 	if len(opts) > 0 {
 		o := opts[0]
@@ -97,7 +98,7 @@ func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions
 			language = o.Language
 		}
 
-		noTitlesWithoutUrl = o.NoTitlesWithoutUrl
+		noTitlesWithoutURL = o.NoTitlesWithoutURL
 	}
 
 	// Define the variables
@@ -107,7 +108,7 @@ func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions
 		"first":    limit,
 		"filter": map[string]interface{}{
 			"searchQuery":             searchQuery,
-			"includeTitlesWithoutUrl": !noTitlesWithoutUrl,
+			"includeTitlesWithoutURL": !noTitlesWithoutURL,
 		},
 	}
 
@@ -139,7 +140,7 @@ func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions
 	return respData.S, nil
 }
 
-// FullTitle fetches the full data about the title from the api by it's JW Id.
+// FullTitle fetches the full data about the title from the api by it's JW ID.
 //
 // - client : Justwatch client to make the query through.
 func (t *TitlePreview) FullTitle(client *JustwatchClient) (*Title, error) {

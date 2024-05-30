@@ -18,16 +18,16 @@ type OmdbClient struct {
 
 // Options to configure the imdb client's behaviour.
 type OmdbClientOpts struct {
-
 	// Set this to true to disable caching results.
 	DisableCaching bool
 }
 
 const (
-	//Default value of cache expiration : 5 hours.
+	// Default value of cache expiration : 5 hours.
 	defaultCacheExpiration = 5 * time.Hour
-	//Default file path at which data is stored
-	defaultCachePath = "./.omdbcache/"
+	// Default file path at which data is stored
+	defaultCachePath  = "./.omdbcache/"
+	statusCodeSuccess = 200
 )
 
 // NewClient returns a new client with given configs.

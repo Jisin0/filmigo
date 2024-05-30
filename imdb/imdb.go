@@ -12,6 +12,9 @@ import (
 
 const (
 	baseImdbURL = "https://imdb.com"
+
+	statusCodeNotFound = 404
+	statusCodeSuccess  = 200
 )
 
 var (
@@ -27,15 +30,14 @@ type ImdbClient struct {
 
 // Options to configure the imdb client's behaviour.
 type ImdbClientOpts struct {
-
 	// Set this to true to disable caching results.
 	DisableCaching bool
 }
 
 const (
-	//Default value of cache expiration : 5 hours.
+	// Default value of cache expiration : 5 hours.
 	defaultCacheExpiration = 5 * time.Hour
-	//Default file path at which data is stored
+	// Default file path at which data is stored
 	defaultCachePath = "./.imdbcache/"
 )
 
@@ -79,5 +81,5 @@ func NewImdbCache(timeout time.Duration) *ImdbCache {
 type ImdbCache struct {
 	MovieCache  *cache.Cache
 	PersonCache *cache.Cache
-	SearchCache *cache.Cache //Only used for advanced search
+	SearchCache *cache.Cache // Only used for advanced search
 }

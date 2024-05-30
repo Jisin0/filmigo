@@ -19,10 +19,10 @@ func TestSearch(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJson(r, "   ")
+	filmigo.PrintJSON(r, "   ")
 	fmt.Println(r.Results[0].Genres.ToString(", "))
-	fmt.Println(r.Results[0].Backdrops[0].FullUrl())
-	fmt.Println(r.Results[0].Poster.FullUrl())
+	fmt.Println(r.Results[0].Backdrops[0].FullURL())
+	fmt.Println(r.Results[0].Poster.FullURL())
 }
 
 func TestFullTitle(t *testing.T) {
@@ -38,5 +38,5 @@ func TestFullTitle(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJson(res, "  ")
+	filmigo.PrintJSON(res, "  ")
 }

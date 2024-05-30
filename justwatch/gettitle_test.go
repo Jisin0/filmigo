@@ -7,21 +7,21 @@ import (
 )
 
 const (
-	rickAndMortyId = "ts20233"
+	rickAndMortyID = "ts20233"
 )
 
-func TestGetTitleFromUrl(t *testing.T) {
-	r, e := client.GetTitleFromUrl("justwatch.com/US/tv-show/rick-and-morty")
+func TestGetTitleFromURL(t *testing.T) {
+	r, e := client.GetTitleFromURL("justwatch.com/US/tv-show/rick-and-morty")
 	if e != nil {
 		t.Error(e)
 		return
 	}
 
-	filmigo.PrintJson(r, "   ")
+	filmigo.PrintJSON(r, "   ")
 }
 
 func TestGetTitle(t *testing.T) {
-	r, e := client.GetTitle(rickAndMortyId)
+	r, e := client.GetTitle(rickAndMortyID)
 	if e != nil {
 		t.Error(e)
 		return
@@ -31,11 +31,11 @@ func TestGetTitle(t *testing.T) {
 }
 
 func TestGetTitleOffers(t *testing.T) {
-	r, e := client.GetTitleOffers(rickAndMortyId)
+	r, e := client.GetTitleOffers(rickAndMortyID)
 	if e != nil {
 		t.Error(e)
 		return
 	}
 
-	filmigo.PrintJson(r, "   ")
+	filmigo.PrintJSON(r, "   ")
 }

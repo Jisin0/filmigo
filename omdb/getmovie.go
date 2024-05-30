@@ -15,20 +15,15 @@ import (
 
 // Get movie query values.
 type GetMovieOpts struct {
-
 	// Imdb id of the movie for ex: tt1285016.
-	Id string `url:"i"`
-
+	ID string `url:"i"`
 	// Exact title of the movie to fetch.
 	Title string `url:"t"`
-
 	// Type of result to return for ex: series.
 	// See omdb.ResultTypeXX values for all possible values.
 	Type string `url:"type"`
-
 	// Year of realease of the movie.
 	Year string `url:"y"`
-
 	// Length of plot to return, "short" for a short plot or "full" for the full plot.
 	// Use omdb.PlotShort or omdb.PlotFull.
 	Plot string `url:"plot"`
@@ -36,7 +31,6 @@ type GetMovieOpts struct {
 
 // Result from the omc.log.Debug("using cached data")db.GetMovie function containing full data on a movie.
 type Movie struct {
-
 	// Title of the movie.
 	Title string `json:"title"`
 
@@ -52,22 +46,22 @@ type Movie struct {
 	// Runtime/Duration of the movie in minutes for ex. 120 min.
 	Runtime string `json:"runtime"`
 
-	//Genres of the movie ina string seperated by commas for ex: Action, Comedy, Romance.
+	// Genres of the movie ina string separated by commas for ex: Action, Comedy, Romance.
 	Genres string `json:"genre"`
 
 	// Name of the Director of the movie.
 	Director string `json:"director"`
 
-	// Writers of the movie seperated by commas.
+	// Writers of the movie separated by commas.
 	Writers string `json:"writer"`
 
-	// Actors/Stars of the movie seperated by commas.
+	// Actors/Stars of the movie separated by commas.
 	Actors string `json:"actors"`
 
 	// Plot of the movie.
 	Plot string `json:"plot"`
 
-	// List of languages seperated by commas for ex: English, Spanish, Italian.
+	// List of languages separated by commas for ex: English, Spanish, Italian.
 	Languages string `json:"language"`
 
 	// Country of origin of the movie.
@@ -92,7 +86,7 @@ type Movie struct {
 	ImdbVotes string `json:"imdbvotes"`
 
 	// Imdb id of the movie.
-	ImdbId string `json:"imdbid"`
+	ImdbID string `json:"imdbid"`
 
 	// Type of title for ex: movie, series or episode.
 	// Use omdb.ResultTypeXX values for reliablility.
@@ -121,16 +115,15 @@ type Movie struct {
 
 // Rating of the movie with data about the source.
 type Rating struct {
-	//Source of the rating for ex: Internet Movie Database.
+	// Source of the rating for ex: Internet Movie Database.
 	Source string `json:"source"`
-	//Value of the rating either as a frcation or percentage.
+	// Value of the rating either as a frcation or percentage.
 	Value string `json:"value"`
 }
 
 // GetMovie gets the full data of a movie using it's imdb id or the full name.
 func (c *OmdbClient) GetMovie(opts *GetMovieOpts) (*Movie, error) {
-
-	if opts.Id == "" && opts.Title == "" {
+	if opts.ID == "" && opts.Title == "" {
 		return nil, errors.New("no id or title provided")
 	}
 
@@ -138,14 +131,14 @@ func (c *OmdbClient) GetMovie(opts *GetMovieOpts) (*Movie, error) {
 		return nil, errors.New("no obdb api key provided")
 	}
 
-	urlParams, err := encode.UrlParams(*opts)
+	urlParams, err := encode.URLParams(*opts)
 	if err != nil {
 		return nil, errors.Wrap(err, "getmovie: failed to parse url params")
 	}
 
 	fullURL := fmt.Sprintf("%s?apikey=%s&%s", omdbAPIURL, c.apiKey, urlParams.Encode())
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	req, err := http.NewRequest("GET", fullURL, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build request")
 	}
@@ -155,7 +148,9 @@ func (c *OmdbClient) GetMovie(opts *GetMovieOpts) (*Movie, error) {
 		return nil, errors.Wrap(err, "failed to make request")
 	}
 
-	if resp.StatusCode != 200 {
+	defer resp.Body.Close()
+
+	if resp.StatusCode != statusCodeSuccess {
 		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
 	}
 

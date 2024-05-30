@@ -17,7 +17,6 @@ func TestSearchTitles(t *testing.T) {
 	}
 
 	t.Logf("%+v", res)
-
 }
 
 func TestSearchAll(t *testing.T) {
@@ -28,7 +27,6 @@ func TestSearchAll(t *testing.T) {
 	}
 
 	t.Logf("%+v", res)
-
 }
 
 func TestSearchNames(t *testing.T) {
@@ -39,7 +37,6 @@ func TestSearchNames(t *testing.T) {
 	}
 
 	t.Logf("%+v", res)
-
 }
 
 func TestFullTitle(t *testing.T) {
@@ -55,5 +52,5 @@ func TestFullTitle(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJson(res, "  ")
+	filmigo.PrintJSON(res, "  ")
 }

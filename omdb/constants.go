@@ -1,13 +1,13 @@
-//(c) Jisin0
-//Omdb constants.
+// (c) Jisin0
+// Omdb constants.
 
 package omdb
 
 const (
-	omdbAPIURL = "https://omdbapi.com" //base omdb api url
+	omdbAPIURL = "https://omdbapi.com" // base omdb api url
 
 	ResultTrue  = "True"  // results were returned
-	ResultFalse = "False" //results weren't returned
+	ResultFalse = "False" // results weren't returned
 
 	ResultTypeMovie   = "movie"   // movie result type
 	ResultTypeSeries  = "series"  // series result type

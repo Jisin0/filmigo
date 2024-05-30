@@ -9,7 +9,7 @@ linters-settings:
         severity: warning
         disabled: true
   dupl:
-    threshold: 120
+    threshold: 200
   goconst:
     min-len: 2
     min-occurrences: 3
@@ -20,20 +20,37 @@ linters-settings:
       - opinionated
       - performance
       - style
+    settings:
+      # default is 2 wtf
+      ifElseChain:
+        minThreshold: 4
   govet:
-    check-shadowing: true
-    enable:
+    shadow: true
+    # Disable for now bcus change are too big, must do later
+    disable:
       - fieldalignment
   nolintlint:
     require-explanation: true
     require-specific: true
+  prealloc:
+    # stop alerting when declaring []string
+    range-loops: false
+  gosec:
+    # Don't know much abt fil perms I use 0644 and this thing won't let me
+    excludes:
+      - G306
+  mnd:
+    ignored-numbers:
+      - '0o644'
+      - '100'
+      - '2'
 
 linters:
   disable-all: true
   enable:
     - bodyclose
     - deadcode
-    - depguard
+   # - depguard (absolute trash)
     - dogsled
     - dupl
     - errcheck
@@ -43,7 +60,8 @@ linters:
     - gocritic
     - gofmt
     - goimports
-    - gomnd
+   # - gomnd (deprecated)
+    - mnd
     - gocyclo
     - gosec
     - gosimple
@@ -66,6 +84,22 @@ linters:
     - varcheck
     - whitespace
     - wsl
+
+issues:
+  exclude-rules:
+    # Disable linters that are annoying in tests.
+    - path: _test\.go
+      linters:
+        - gocritic
+        - gocyclo
+        - errcheck
+        - dupl
+        - gosec
+        - funlen
+        - goconst
+        - gocognit
+        - scopelint
+        - lll
 
 run:
   issues-exit-code: 1

@@ -1,5 +1,5 @@
 
-query GetUrlTitleDetails($fullPath: String!, $country: Country!, $language: Language!, $episodeMaxLimit: Int, $platform: Platform! = WEB, $allowSponsoredRecommendations: SponsoredRecommendationsInput, $format: ImageFormat, $backdropProfile: BackdropProfile, $streamingChartsFilter: StreamingChartsFilter) {
+query GetURLTitleDetails($fullPath: String!, $country: Country!, $language: Language!, $episodeMaxLimit: Int, $platform: Platform! = WEB, $allowSponsoredRecommendations: SponsoredRecommendationsInput, $format: ImageFormat, $backdropProfile: BackdropProfile, $streamingChartsFilter: StreamingChartsFilter) {
   urlV2(fullPath: $fullPath) {
 	id
 	metaDescription
@@ -26,7 +26,7 @@ fragment TitleDetails on Node {
 	  standardWebURL
 	  package {
 		id
-		packageId
+		packageID
 		clearName
 		technicalName
 		shortName
@@ -42,7 +42,7 @@ fragment TitleDetails on Node {
 	disneyOffersCount: offerCount(country: $country, platform: $platform, filter: {packages: ["dnp"]})
 	starOffersCount: offerCount(country: $country, platform: $platform, filter: {packages: ["srp"]})
 	objectType
-	objectId
+	objectID
 	offerCount(country: $country, platform: $platform)
 	uniqueOfferCount: offerCount(country: $country, platform: $platform, filter: {bestOnly: true})
 	offers(country: $country, platform: $platform) {
@@ -51,7 +51,7 @@ fragment TitleDetails on Node {
 	  elementCount
 	  package {
 		id
-		packageId
+		packageID
 		clearName
 		__typename
 	  }
@@ -63,7 +63,7 @@ fragment TitleDetails on Node {
 	  __typename
 	}
 	promotedBundles(country: $country, platform: $platform) {
-	  promotionUrl
+	  promotionURL
 	  __typename
 	}
 	availableTo(country: $country, platform: $platform) {
@@ -89,11 +89,11 @@ fragment TitleDetails on Node {
 	}
 	content(country: $country, language: $language) {
 	  backdrops {
-		backdropUrl
+		backdropURL
 		__typename
 	  }
 	  fullBackdrops: backdrops(profile: S1920, format: JPG) {
-		backdropUrl
+		backdropURL
 		__typename
 	  }
 	  clips {
@@ -108,9 +108,9 @@ fragment TitleDetails on Node {
 		...TrailerClips
 		__typename
 	  }
-	  externalIds {
-		imdbId
-		tmdbId
+	  externalIDs {
+		imdbID
+		tmdbID
 		__typename
 	  }
 	  fullPath
@@ -118,8 +118,8 @@ fragment TitleDetails on Node {
 		shortName
 		__typename
 	  }
-	  posterUrl
-	  fullPosterUrl: posterUrl(profile: S718, format: JPG)
+	  posterURL
+	  fullPosterURL: posterURL(profile: S718, format: JPG)
 	  runtime
 	  isReleased
 	  scoring {
@@ -140,7 +140,7 @@ fragment TitleDetails on Node {
 		label
 		package {
 		  id
-		  packageId
+		  packageID
 		  shortName
 		  clearName
 		  __typename
@@ -154,7 +154,7 @@ fragment TitleDetails on Node {
 		  role
 		  name
 		  characterName
-		  personId
+		  personID
 		  __typename
 		}
 		interactions {
@@ -256,7 +256,7 @@ fragment TitleDetails on Node {
 	}
 	seasons(sortDirection: DESC) {
 	  id
-	  objectId
+	  objectID
 	  objectType
 	  totalEpisodeCount
 	  availableTo(country: $country, platform: $platform) {
@@ -270,7 +270,7 @@ fragment TitleDetails on Node {
 		__typename
 	  }
 	  content(country: $country, language: $language) {
-		posterUrl
+		posterURL
 		seasonNumber
 		fullPath
 		title
@@ -290,7 +290,7 @@ fragment TitleDetails on Node {
 	  }
 	  show {
 		id
-		objectId
+		objectID
 		objectType
 		watchlistEntryV2 {
 		  createdAt
@@ -318,7 +318,7 @@ fragment TitleDetails on Node {
 	}
 	show {
 	  id
-	  objectId
+	  objectID
 	  objectType
 	  totalSeasonCount
 	  customlistEntries {
@@ -356,12 +356,12 @@ fragment TitleDetails on Node {
 		  role
 		  name
 		  characterName
-		  personId
+		  personID
 		  __typename
 		}
 		productionCountries
-		externalIds {
-		  imdbId
+		externalIDs {
+		  imdbID
 		  __typename
 		}
 		upcomingReleases(releaseTypes: DIGITAL) {
@@ -369,10 +369,10 @@ fragment TitleDetails on Node {
 		  __typename
 		}
 		backdrops {
-		  backdropUrl
+		  backdropURL
 		  __typename
 		}
-		posterUrl
+		posterURL
 		isReleased
 		videobusterClips: clips(providers: [VIDEOBUSTER]) {
 		  ...TrailerClips
@@ -428,7 +428,7 @@ fragment TitleOffer on Offer {
   type
   package {
 	id
-	packageId
+	packageID
 	clearName
 	technicalName
 	icon(profile: S100)
@@ -446,15 +446,15 @@ fragment TitleOffer on Offer {
 }
 
 fragment TrailerClips on Clip {
-  sourceUrl
-  externalId
+  sourceURL
+  externalID
   provider
   name
   __typename
 }
 
 fragment SponsoredAd on SponsoredRecommendationAd {
-  bidId
+  bidID
   holdoutGroup
   campaign {
 	name
@@ -465,7 +465,7 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 	}
 	hideRatings
 	hideDetailPageButton
-	promotionalImageUrl
+	promotionalImageURL
 	promotionalVideo {
 	  url
 	  __typename
@@ -480,7 +480,7 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 	  monetizationType
 	  package {
 		id
-		packageId
+		packageID
 		shortName
 		clearName
 		icon
@@ -489,8 +489,8 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 	  __typename
 	}
 	nodeOverrides {
-	  nodeId
-	  promotionalImageUrl
+	  nodeID
+	  promotionalImageURL
 	  watchNowOffer {
 		standardWebURL
 		__typename
@@ -498,37 +498,37 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 	  __typename
 	}
 	node {
-	  nodeId: id
+	  nodeID: id
 	  __typename
 	  ... on MovieOrShowOrSeason {
 		content(country: $country, language: $language) {
 		  fullPath
-		  posterUrl
+		  posterURL
 		  title
 		  originalReleaseYear
 		  scoring {
 			imdbScore
 			__typename
 		  }
-		  externalIds {
-			imdbId
+		  externalIDs {
+			imdbID
 			__typename
 		  }
 		  backdrops(format: $format, profile: $backdropProfile) {
-			backdropUrl
+			backdropURL
 			__typename
 		  }
 		  isReleased
 		  __typename
 		}
-		objectId
+		objectID
 		objectType
 		offers(country: $country, platform: $platform) {
 		  monetizationType
 		  presentationType
 		  package {
 			id
-			packageId
+			packageID
 			__typename
 		  }
 		  id
@@ -589,7 +589,7 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 			node: nodeV2 {
 			  content(country: $country, language: $language) {
 				fullPath
-				posterUrl
+				posterURL
 				title
 				originalReleaseYear
 				scoring {
@@ -600,7 +600,7 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 				__typename
 			  }
 			  id
-			  objectId
+			  objectID
 			  objectType
 			  __typename
 			}
@@ -618,7 +618,7 @@ fragment SponsoredAd on SponsoredRecommendationAd {
 
 fragment Episode on Episode {
   id
-  objectId
+  objectID
   seenlistEntry {
 	createdAt
 	__typename
@@ -634,7 +634,7 @@ fragment Episode on Episode {
 	  label
 	  package {
 		id
-		packageId
+		packageID
 		__typename
 	  }
 	  __typename

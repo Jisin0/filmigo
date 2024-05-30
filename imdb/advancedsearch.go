@@ -19,75 +19,54 @@ const (
 	baseAdvancedSearchURL  = baseImdbURL + "/search/"
 	advancedSearchTitleURL = baseAdvancedSearchURL + "title/"
 	advancedSearchNameURL  = baseAdvancedSearchURL + "name/"
+	href                   = "href"
 )
 
 // Options for the AdvancedSearchTitle query see https://imdb.com/search/title to see the list and syntax for each option.
 type AdvancedSearchTitleOpts struct {
-
 	// Search by the title name of a movie/show.
 	TitleName string `url:"title"`
-
 	// Type filter by the type of title see TitleTypeXX values in the constants package for all possible values for ex: constants.TitleTypeMovie.
 	Types []string `url:"title_type"`
-
 	// RelaseDate a range/period of time in which the title was released. Dates must be in the format yyyy-dd-mm.
 	RelaseDate types.SearchRange `url:"release_date"`
-
 	// Ratings range of minimum and maximum rating of titles returned. for ex. Start: 7, End: 9.5.
 	Rating types.SearchRange `url:"user_rating"`
-
 	// Votes range of votes on a title. for ex. Start: 10000, End: 500000.
 	Votes types.SearchRange `url:"num_votes"`
-
 	// Genres filter by the genre of the title see TitleGenreXX values in the constants package for all possible values for ex: constants.TitleGenreAction.
 	Genres []string `url:"genres"`
-
 	// Awards: find titles that have won or have been nominated for an award.
 	// See TitleAwardXX values in the constants package for all possible values for ex: constants.TitleAwardOscarWinner.
 	Awards []string `url:"groups"`
-
 	// Topics on the imdb page of the title. Use additional params to search within a topic.
 	Topics []string `url:"has"`
-
 	// Companies: filter by companies what produced the title.
 	Companies []string `url:"companies"`
-
 	// InstantWatch: search by ability to watch online on an instantwatch platform.
 	InstantWatches []string `url:"online_availability"`
-
 	// Certificates: The watching certificates of a title. see TitleCertificateXX values in the constants package for all possible values for ex: constants.TitleCertificatePG.
 	Certificates []string `url:"certificates"`
-
 	// Color: The color info of the title. for ex. constants.TitleColorBlackAndWhite for black&white titles.
 	Colors []string `url:"colors"`
-
 	// Countries: country codes of the countries associated with the title. for ex. GB for United Kingdom.
 	Countries []string `url:"country"`
-
 	// Keywords: Filter by additional keywords.
 	Keywords []string `url:"keywords"`
-
 	// Languages. Language codes of language of the title. for ex. en for english.
 	Languages []string `url:"languages"`
-
 	// Popularity. Filter by a range of imdb popularity rank.
 	Popularity types.SearchRange `url:"moviemeter"`
-
 	// CastOrCrew. Lost of ids of actors or crew in the title. for ex nm0614165 for Cillian Murphy
 	CastOrCrew []string `url:"role"`
-
 	// Characters. List of names of characters in the movie.
 	Characters []string `url:"characters"`
-
 	// Runtime. Range of runtime of the movie in minutes.
 	Runtime types.SearchRange `url:"runtime"`
-
 	// SoundMixes: The sound mix of a title. see TitleSoundXX values in the constants package for all possible values for ex: constants.TitleSoundDolby.
 	SoundMixes []string `url:"sound_mixes"`
-
 	// AdultTitles: Set value to constants.StringInclude to include adult titles
 	AdultTitles string `url:"adult"`
-
 	// Additional url parameters to be passed along with the request.
 	ExtraParams map[string]any
 }
@@ -114,26 +93,27 @@ type AdvancedSearchTitleResult struct {
 //
 // opts - configure search options.
 func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*AdvancedSearchTitleResult, error) {
-
-	urlParams, _ := encode.UrlParams(*opts)
-	urlParams = encode.UrlMapParams(opts.ExtraParams, urlParams)
+	urlParams, _ := encode.URLParams(*opts)
+	urlParams = encode.URLMapParams(opts.ExtraParams, urlParams)
 
 	fullURL := fmt.Sprintf("%s?%s", advancedSearchTitleURL, urlParams.Encode())
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	req, err := http.NewRequest("GET", fullURL, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request")
 	}
+
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
 	req.Header.Set("languages", "en-us,en;q=0.5")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make request")
 	}
 
-	if resp.StatusCode == 404 {
+	if resp.StatusCode == statusCodeNotFound {
 		return nil, errors.Errorf("results not found")
-	} else if resp.StatusCode != 200 {
+	} else if resp.StatusCode != statusCodeSuccess {
 		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
 	}
 
@@ -157,7 +137,6 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 	var results []*AdvancedSearchTitleResult
 
 	for _, e := range elements {
-
 		var item AdvancedSearchTitleResult
 
 		if posterNode, _ := htmlquery.Query(e, "//img"); posterNode != nil {
@@ -181,7 +160,7 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 
 			aNode, _ := htmlquery.Query(titleNode, "/..")
 			for _, a := range aNode.Attr {
-				if a.Key == "href" {
+				if a.Key == href {
 					item.Link = baseImdbURL + a.Val
 				}
 			}
@@ -189,6 +168,7 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 
 		if metadataNode, _ := htmlquery.Query(e, "//div[ends-with(@class, 'dli-title-metadata')]"); metadataNode != nil {
 			var items []string
+
 			for _, span := range htmlquery.Find(metadataNode, "/span") {
 				items = append(items, htmlquery.InnerText(span))
 			}
@@ -205,7 +185,6 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 		}
 
 		results = append(results, &item)
-
 	}
 
 	return results, nil
@@ -220,36 +199,26 @@ func (s *AdvancedSearchTitleResult) FullTitle(client *ImdbClient) (*Movie, error
 
 // Options for the AdvancedSearchName query see https://imdb.com/search/title to see the list and syntax for each option.
 type AdvancedSearchNameOpts struct {
-
 	// Name: Filter by the name of the person.
 	Name string `url:"name"`
-
 	// BirthRange: A range of birth date inside which the person was born in the format yyyy-dd-mm.
 	BirthRange types.SearchRange `url:"birth_date"`
-
 	// Birthday: Birthday of the actor in the format MM-DD
 	Birthday string `url:"birth_monthday"`
-
 	// Awards: List of awards won by the person
-	//see NameAwardXX values in the constants package for all possible values for ex. constants.NameAwardBestActorNominated
+	// see NameAwardXX values in the constants package for all possible values for ex. constants.NameAwardBestActorNominated
 	Awards []string `url:"groups"`
-
 	// Page topics: filter by topics on the imdb page of the person. Use ExtraParams for searching within a topic.
 	PageTopics []string `url:"has"`
-
 	// DeathRange: A range of death date inside which the person passed away in the format yyyy-dd-mm.
 	DeathRange types.SearchRange `url:"birth_date"`
-
 	// Genders: Return actors that ho by the given genders.
 	// See NameGenderXX values for all possible values for ex: NameGenderMale.
 	Genders []string `url:"gender"`
-
 	// Titles: A list of imdb ids of titles for ex. tt15398776 to search for stars in oppenheimer.
 	Titles []string `url:"roles"`
-
 	// AdultNames: Set value to constants.StringInclude to include stars in adult titles.
 	AdultNames string `url:"adult"`
-
 	// Additional url parameters to be passed along with the request.
 	ExtraParams map[string]any
 }
@@ -276,9 +245,8 @@ type AdvacedSearchNameResult struct {
 //
 // opts - configure search options.
 func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedSearchNameResult, error) {
-
-	urlParams, _ := encode.UrlParams(*opts)
-	urlParams = encode.UrlMapParams(opts.ExtraParams, urlParams)
+	urlParams, _ := encode.URLParams(*opts)
+	urlParams = encode.URLMapParams(opts.ExtraParams, urlParams)
 
 	fullURL := fmt.Sprintf("%s?%s", advancedSearchNameURL, urlParams.Encode())
 
@@ -300,14 +268,13 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 	var results []*AdvacedSearchNameResult
 
 	for _, e := range elements {
-
 		var item AdvacedSearchNameResult
 
 		if posterNode, _ := htmlquery.Query(e, "//img"); posterNode != nil {
 			for _, a := range posterNode.Attr {
 				if a.Key == "src" {
 					item.Image = a.Val
-				} else if a.Key == "href" {
+				} else if a.Key == href {
 					item.Link = a.Val
 				}
 			}
@@ -326,7 +293,7 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 
 			aNode, _ := htmlquery.Query(titleNode, "/..")
 			for _, a := range aNode.Attr {
-				if a.Key == "href" {
+				if a.Key == href {
 					item.Link = baseImdbURL + a.Val
 				}
 			}
@@ -346,7 +313,7 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 			topTitle.Text = htmlquery.InnerText(topTitleNode)
 
 			for _, a := range topTitleNode.Attr {
-				if a.Key == "href" {
+				if a.Key == href {
 					topTitle.Href = baseImdbURL + a.Val
 				}
 			}
@@ -359,7 +326,6 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 		}
 
 		results = append(results, &item)
-
 	}
 
 	return results, nil

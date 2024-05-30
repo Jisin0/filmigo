@@ -163,7 +163,7 @@ const (
 	NameAwardGoldenGlobeWinning             = "golden_globe_winning"
 )
 
-// Name Gender Identity constants.
+// Name Gender IDentity constants.
 const (
 	NameGenderMale      = "male"
 	NameGenderFemale    = "female"

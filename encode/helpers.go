@@ -10,8 +10,8 @@ import (
 	"golang.org/x/net/html"
 )
 
+// Returns a list of Link by searching for all a tags.
 func getLinks(node *html.Node) types.Links {
-
 	ls, e := htmlquery.QueryAll(node, ".//a")
 	if e != nil || len(ls) < 1 {
 		return []types.Link{}
@@ -21,6 +21,7 @@ func getLinks(node *html.Node) types.Links {
 
 	for _, l := range ls {
 		var href string
+
 		text := htmlquery.InnerText(l)
 		if text == "" {
 			continue
@@ -32,7 +33,7 @@ func getLinks(node *html.Node) types.Links {
 			}
 		}
 
-		//Add imdb base url if href is a url path
+		// Add imdb base url if href is a url path
 		if strings.HasPrefix(href, "/") {
 			href = "https://imdb.com" + href
 		}
@@ -43,8 +44,8 @@ func getLinks(node *html.Node) types.Links {
 	return links
 }
 
+// Searches for all li tags and returns a list of their innertext.
 func getTextList(node *html.Node) []string {
-
 	ls, e := htmlquery.QueryAll(node, ".//li")
 	if e != nil || len(ls) < 1 {
 		return []string{}

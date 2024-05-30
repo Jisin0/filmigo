@@ -7,11 +7,11 @@ import (
 )
 
 const (
-	oppenheimerId = "tt15398776"
+	oppenheimerID = "tt15398776"
 )
 
 func TestGetMovie(t *testing.T) {
-	r, e := client.GetMovie(&omdb.GetMovieOpts{Id: oppenheimerId})
+	r, e := client.GetMovie(&omdb.GetMovieOpts{ID: oppenheimerID})
 	if e != nil {
 		t.Error(e)
 	}

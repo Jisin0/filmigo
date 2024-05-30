@@ -29,8 +29,7 @@ func (t *Movie) PrettyPrint() {
 		fmt.Printf("Runtime: %s\n", t.Runtime)
 	}
 
-	if len(t.Genres) > 0 {
+	if t.Genres != "" {
 		fmt.Printf("Genres: %s\n", t.Genres)
 	}
-
 }

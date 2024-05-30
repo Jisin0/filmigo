@@ -13,12 +13,11 @@ import (
 
 var searchRangeType = reflect.TypeOf(types.SearchRange{})
 
-// UrlParams function to encode struct fields into URL parameters
-func UrlParams(params interface{}) (url.Values, error) {
-
+// URLParams function to encode struct fields into URL parameters
+func URLParams(params interface{}) (url.Values, error) {
 	v := reflect.ValueOf(params)
 	if v.Kind() != reflect.Struct {
-		return url.Values{}, fmt.Errorf("UrlParams: input is not a struct")
+		return url.Values{}, fmt.Errorf("URLParams: input is not a struct")
 	}
 
 	values := url.Values{}
@@ -26,6 +25,7 @@ func UrlParams(params interface{}) (url.Values, error) {
 
 	for i := 0; i < v.NumField(); i++ {
 		field := v.Field(i)
+
 		tag := t.Field(i).Tag.Get("url")
 		if tag == "" {
 			continue
@@ -42,6 +42,7 @@ func UrlParams(params interface{}) (url.Values, error) {
 			for j := 0; j < field.Len(); j++ {
 				slice = append(slice, fmt.Sprintf("%v", field.Index(j).Interface()))
 			}
+
 			if len(slice) > 0 {
 				values.Set(tag, strings.Join(slice, ","))
 			}
@@ -57,10 +58,11 @@ func UrlParams(params interface{}) (url.Values, error) {
 }
 
 // Function to encode a map into URL parameters.
-func UrlMapParams(params map[string]any, existingValues url.Values) url.Values {
+func URLMapParams(params map[string]any, existingValues url.Values) url.Values {
 	for key, value := range params {
 		// Convert the value to string using fmt.Sprint to handle different types
 		existingValues.Add(key, fmt.Sprint(value))
 	}
+
 	return existingValues
 }

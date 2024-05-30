@@ -1,6 +1,6 @@
-query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Language!, $episodeMaxLimit: Int, $platform: Platform! = WEB, $allowSponsoredRecommendations: SponsoredRecommendationsInput, $format: ImageFormat, $backdropProfile: BackdropProfile, $streamingChartsFilter: StreamingChartsFilter) {
-	node(id: $entityId) {
-	  ... on Url {
+query GetNodeTitleDetails($entityID: ID!, $country: Country!, $language: Language!, $episodeMaxLimit: Int, $platform: Platform! = WEB, $allowSponsoredRecommendations: SponsoredRecommendationsInput, $format: ImageFormat, $backdropProfile: BackdropProfile, $streamingChartsFilter: StreamingChartsFilter) {
+	node(id: $entityID) {
+	  ... on URL {
 		metaDescription
 		metaKeywords
 		metaRobots
@@ -28,7 +28,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		standardWebURL
 		package {
 		  id
-		  packageId
+		  packageID
 		  clearName
 		  technicalName
 		  shortName
@@ -56,7 +56,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		filter: {packages: ["srp"]}
 	  )
 	  objectType
-	  objectId
+	  objectID
 	  offerCount(country: $country, platform: $platform)
 	  uniqueOfferCount: offerCount(
 		country: $country
@@ -69,7 +69,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
         standardWebURL
 		package {
 		  id
-		  packageId
+		  packageID
 		  clearName
 		  __typename
 		}
@@ -81,7 +81,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		__typename
 	  }
 	  promotedBundles(country: $country, platform: $platform) {
-		promotionUrl
+		promotionURL
 		__typename
 	  }
 	  availableTo(country: $country, platform: $platform) {
@@ -107,11 +107,11 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	  }
 	  content(country: $country, language: $language) {
 		backdrops {
-		  backdropUrl
+		  backdropURL
 		  __typename
 		}
 		fullBackdrops: backdrops(profile: S1920, format: JPG) {
-		  backdropUrl
+		  backdropURL
 		  __typename
 		}
 		clips {
@@ -126,8 +126,8 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		  ...TrailerClips
 		  __typename
 		}
-		externalIds {
-		  imdbId
+		externalIDs {
+		  imdbID
 		  __typename
 		}
 		fullPath
@@ -135,8 +135,8 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		  shortName
 		  __typename
 		}
-		posterUrl
-		fullPosterUrl: posterUrl(profile: S718, format: JPG)
+		posterURL
+		fullPosterURL: posterURL(profile: S718, format: JPG)
 		runtime
 		isReleased
 		scoring {
@@ -157,7 +157,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		  label
 		  package {
 			id
-			packageId
+			packageID
 			shortName
 			clearName
 			__typename
@@ -171,7 +171,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 			role
 			name
 			characterName
-			personId
+			personID
 			__typename
 		  }
 		  interactions {
@@ -276,7 +276,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	  }
 	  seasons(sortDirection: DESC) {
 		id
-		objectId
+		objectID
 		objectType
 		totalEpisodeCount
 		availableTo(country: $country, platform: $platform) {
@@ -290,7 +290,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		  __typename
 		}
 		content(country: $country, language: $language) {
-		  posterUrl
+		  posterURL
 		  seasonNumber
 		  fullPath
 		  title
@@ -310,7 +310,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		}
 		show {
 		  id
-		  objectId
+		  objectID
 		  objectType
 		  watchlistEntryV2 {
 			createdAt
@@ -342,7 +342,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	  }
 	  show {
 		id
-		objectId
+		objectID
 		objectType
 		totalSeasonCount
 		customlistEntries {
@@ -380,12 +380,12 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 			role
 			name
 			characterName
-			personId
+			personID
 			__typename
 		  }
 		  productionCountries
-		  externalIds {
-			imdbId
+		  externalIDs {
+			imdbID
 			__typename
 		  }
 		  upcomingReleases(releaseTypes: DIGITAL) {
@@ -393,10 +393,10 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 			__typename
 		  }
 		  backdrops {
-			backdropUrl
+			backdropURL
 			__typename
 		  }
-		  posterUrl
+		  posterURL
 		  isReleased
 		  videobusterClips: clips(providers: [VIDEOBUSTER]) {
 			...TrailerClips
@@ -455,7 +455,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	type
 	package {
 	  id
-	  packageId
+	  packageID
 	  clearName
 	  technicalName
 	  icon(profile: S100)
@@ -473,15 +473,15 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
   }
   
   fragment TrailerClips on Clip {
-	sourceUrl
-	externalId
+	sourceURL
+	externalID
 	provider
 	name
 	__typename
   }
   
   fragment SponsoredAd on SponsoredRecommendationAd {
-	bidId
+	bidID
 	holdoutGroup
 	campaign {
 	  name
@@ -492,7 +492,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 	  }
 	  hideRatings
 	  hideDetailPageButton
-	  promotionalImageUrl
+	  promotionalImageURL
 	  promotionalVideo {
 		url
 		__typename
@@ -507,7 +507,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		monetizationType
 		package {
 		  id
-		  packageId
+		  packageID
 		  shortName
 		  clearName
 		  icon
@@ -516,8 +516,8 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		__typename
 	  }
 	  nodeOverrides {
-		nodeId
-		promotionalImageUrl
+		nodeID
+		promotionalImageURL
 		watchNowOffer {
 		  standardWebURL
 		  __typename
@@ -525,30 +525,30 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		__typename
 	  }
 	  node {
-		nodeId: id
+		nodeID: id
 		__typename
 		... on MovieOrShowOrSeason {
 		  content(country: $country, language: $language) {
 			fullPath
-			posterUrl
+			posterURL
 			title
 			originalReleaseYear
 			scoring {
 			  imdbScore
 			  __typename
 			}
-			externalIds {
-			  imdbId
+			externalIDs {
+			  imdbID
 			  __typename
 			}
 			backdrops(format: $format, profile: $backdropProfile) {
-			  backdropUrl
+			  backdropURL
 			  __typename
 			}
 			isReleased
 			__typename
 		  }
-		  objectId
+		  objectID
 		  objectType
 		  offers(country: $country, platform: $platform) {
 			monetizationType
@@ -556,7 +556,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
             standardWebURL
 			package {
 			  id
-			  packageId
+			  packageID
 			  __typename
 			}
 			id
@@ -617,7 +617,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 			  node: nodeV2 {
 				content(country: $country, language: $language) {
 				  fullPath
-				  posterUrl
+				  posterURL
 				  title
 				  originalReleaseYear
 				  scoring {
@@ -628,7 +628,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 				  __typename
 				}
 				id
-				objectId
+				objectID
 				objectType
 				__typename
 			  }
@@ -646,7 +646,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
   
   fragment Episode on Episode {
 	id
-	objectId
+	objectID
 	seenlistEntry {
 	  createdAt
 	  __typename
@@ -662,7 +662,7 @@ query GetNodeTitleDetails($entityId: ID!, $country: Country!, $language: Languag
 		label
 		package {
 		  id
-		  packageId
+		  packageID
 		  __typename
 		}
 		__typename

@@ -4,23 +4,22 @@
 package justwatch
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 )
 
 // Graphql queries
 var searchTitleQuery string
 var getTitleQuery string
-var getTitleFromUrlQuery string
+var getTitleFromURLQuery string
 var getTitleOffersQuery string
 
+// Initialize graphql queries
 func init() {
-	// Initialize graphql queries
-
 	var err error
 
-	getTitleFromUrlQuery, err = loadQuery("./queries/gettitleurl.graphql")
+	getTitleFromURLQuery, err = loadQuery("./queries/gettitleurl.graphql")
 	if err != nil {
 		log.Println("failed to load graphql file !", err)
 	}
@@ -47,9 +46,11 @@ func loadQuery(filePath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	query, err := ioutil.ReadFile(absPath)
+
+	query, err := os.ReadFile(absPath)
 	if err != nil {
 		return "", err
 	}
+
 	return string(query), nil
 }

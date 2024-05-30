@@ -14,13 +14,13 @@ query GetSuggestedTitles($country: Country!, $language: Language!, $first: Int!,
 fragment SuggestedTitle on MovieOrShow {
 	id
 	objectType
-	objectId
+	objectID
 	content(country: $country, language: $language) {
 		fullPath
 		title
 		originalTitle
 		originalReleaseYear
-		posterUrl
+		posterURL
 		fullPath
 		shortDescription
 		isReleased
@@ -28,7 +28,7 @@ fragment SuggestedTitle on MovieOrShow {
 			shortName
 		}
 		backdrops {
-			backdropUrl
+			backdropURL
 		}
 		__typename
 	}

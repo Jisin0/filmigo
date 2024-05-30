@@ -21,10 +21,9 @@ var linkStructType = reflect.TypeOf(types.Link{})
 //
 // See https://github.com/Jisin/Filmigo/xpath for examples and full reference.
 func Xpath(doc *html.Node, val any) any {
-
 	st := reflect.TypeOf(val)
 
-	//https://stackoverflow.com/questions/63421976
+	// https://stackoverflow.com/questions/63421976
 	// v is the interface{}
 	v := reflect.ValueOf(&val).Elem()
 	// Allocate a temporary variable with type of the struct.
@@ -37,14 +36,17 @@ func Xpath(doc *html.Node, val any) any {
 
 	for i := 0; i < tmp.NumField(); i++ {
 		field := st.Field(i)
+
 		args := strings.Split(field.Tag.Get("xpath"), "|")
 		if len(args) < 1 {
 			continue
 		}
 
-		path := args[0]
-		var method string
-		var attr string
+		var (
+			method string
+			attr   string
+		)
+
 		if len(args) > 1 {
 			method = args[1]
 			if strings.HasPrefix(method, "attr") {
@@ -55,6 +57,8 @@ func Xpath(doc *html.Node, val any) any {
 			}
 		}
 
+		path := args[0]
+
 		node, err := htmlquery.Query(doc, path)
 		if node == nil || err != nil {
 			continue
@@ -62,9 +66,8 @@ func Xpath(doc *html.Node, val any) any {
 
 		fieldType := field.Type
 
-		//Extra options are passed with a seperator | in the xpath struct tag, for ex. src to get the src attr of a node
+		// Extra options are passed with a separator | in the xpath struct tag, for ex. src to get the src attr of a node
 		switch method {
-
 		case "attr":
 			for _, a := range node.Attr {
 				if a.Key == attr {
@@ -74,8 +77,8 @@ func Xpath(doc *html.Node, val any) any {
 			}
 
 		default:
-			//If the field is of type []Link all inner a tags are extracted
-			//If field type is []string innertex of each li tag is extracted
+			// If the field is of type []Link all inner a tags are extracted
+			// If field type is []string innertex of each li tag is extracted
 			if fieldType.Kind() == reflect.Slice && fieldType.Elem() == linkStructType {
 				links := getLinks(node)
 				lVal := reflect.Append(reflect.ValueOf(links))
@@ -88,11 +91,9 @@ func Xpath(doc *html.Node, val any) any {
 				tmp.FieldByName(field.Name).SetString(htmlquery.InnerText(node))
 			}
 		}
-
 	}
 
 	v.Set(tmp)
 
 	return val
-
 }

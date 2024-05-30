@@ -31,47 +31,46 @@ type SearchResults struct {
 
 // Data obtained from searching using the api. Could be data on a movie/show/person or sometimes an ad when using SarchAll.
 type SearchResult struct {
-
 	// An image commonly a movie poster or actor's picture.
 	Image Image `json:"i"`
-	// Id of the movie/show/person or the url path for ads.
-	Id string `json:"id"`
+	// ID of the movie/show/person or the url path for ads.
+	ID string `json:"id"`
 	// Header or main text of a search result. A movie/show/person's name.
 	Title string `json:"l"`
 	// For movies or shows, A string of the type os title for ex: TV Series, Movie etc.
 	Subtitle string `json:"q"`
-	//The category of the movie/show. Empty for people.
-	//Possible values : movie, tvSeries, tvMiniSeries
+	// The category of the movie/show. Empty for people.
+	// Possible values : movie, tvSeries, tvMiniSeries
 	Category string `json:"qid"`
-	//A rank point.
+	// A rank point.
 	Rank int `json:"rank"`
-	//The main stars of a movie/show, or a notable work in case of a person.
+	// The main stars of a movie/show, or a notable work in case of a person.
 	Description string `json:"s"`
-	//Year of release of a movie/show
+	// Year of release of a movie/show
 	Year int `json:"y"`
-	//A string indicating the years in which a tv series was released. for ex: 2016-2025
+	// A string indicating the years in which a tv series was released. for ex: 2016-2025
 	Years string `json:"yr"`
-	//A list of videos related to the title or person.
+	// A list of videos related to the title or person.
 	Videos []Video `json:"v"`
 }
 
 type Image struct {
 	Height   int    `json:"height"`
-	ImageUrl string `json:"imageUrl"`
+	ImageURL string `json:"imageURL"`
 	Width    int    `json:"width"`
 }
 
 type Video struct {
 	Thumbnail Image  `json:"i"`
-	Id        string `json:"id"`
+	ID        string `json:"id"`
 	Title     string `json:"l"`
 	Duration  string `json:"s"`
 }
 
 // Optional parameters to be passed to the search query.
 type SearchConfigs struct {
-	//Set true for the api to return video details (trailers, previews etc.).
-	//If enabled you will get a thumbnail of the video and the video id.
+	// Set true for the api to return video details (trailers, previews etc.).
+	// If enabled you will get a thumbnail of the video and the video id.
 	IncludeVideos bool
 }
 
@@ -83,7 +82,6 @@ var ErrNoResults error = errors.New("no search results were found")
 // - configs (optional) - Additional request configs.
 func (c *ImdbClient) SearchTitles(query string, configs ...*SearchConfigs) (*SearchResults, error) {
 	return c.doSearch(titleSearchURL, query, configs...)
-
 }
 
 // Search for only people/names.
@@ -92,7 +90,6 @@ func (c *ImdbClient) SearchTitles(query string, configs ...*SearchConfigs) (*Sea
 // - configs (optional) - Additional request configs.
 func (c *ImdbClient) SearchNames(query string, configs ...*SearchConfigs) (*SearchResults, error) {
 	return c.doSearch(nameSearchURL, query, configs...)
-
 }
 
 // Search for globally on imdb across titles and names.
@@ -102,28 +99,27 @@ func (c *ImdbClient) SearchNames(query string, configs ...*SearchConfigs) (*Sear
 // - configs (optional) - Additional request configs.
 func (c *ImdbClient) SearchAll(query string, configs ...*SearchConfigs) (*SearchResults, error) {
 	return c.doSearch(allSearchURL, query, configs...)
-
 }
 
 // Helper method for search operations.
-func (*ImdbClient) doSearch(baseUrl string, query string, c ...*SearchConfigs) (*SearchResults, error) {
-
+func (*ImdbClient) doSearch(baseURL, query string, c ...*SearchConfigs) (*SearchResults, error) {
 	if len(query) < 1 {
 		return nil, errors.New("imdb.search: query too short")
 	}
 
-	url := fmt.Sprintf(baseUrl, query[0:1], query)
+	url := fmt.Sprintf(baseURL, query[0:1], query)
 
 	if len(c) > 0 && c[0].IncludeVideos {
 		url += "?includeVideos=1"
 	}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "imdb.search: failed to create request")
 	}
 
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux i686; rv:107.0) Gecko/20100101 Firefox/107.0")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "imdb.search: failed to create request")
@@ -132,13 +128,17 @@ func (*ImdbClient) doSearch(baseUrl string, query string, c ...*SearchConfigs) (
 	defer resp.Body.Close()
 
 	var results SearchResults
-	json.NewDecoder(resp.Body).Decode(&results)
+
+	err = json.NewDecoder(resp.Body).Decode(&results)
+	if err != nil {
+		return nil, errors.New("imdb.Search failed to decode response body")
+	}
+
 	if len(results.Results) < 1 {
 		return &results, ErrNoResults
 	}
 
 	return &results, nil
-
 }
 
 const (
@@ -149,7 +149,7 @@ const (
 
 // Returns the type of search result returned possible values are "title", "name" and "other".
 func (s *SearchResult) GetType() string {
-	id := s.Id
+	id := s.ID
 
 	// url path is returned for promotional items.
 	if strings.HasPrefix(id, "/") {
@@ -168,22 +168,22 @@ func (s *SearchResult) GetType() string {
 //
 // - client : The imdb client to use for the request.
 func (s *SearchResult) FullTitle(client *ImdbClient) (*Movie, error) {
-	return client.GetMovie(s.Id)
+	return client.GetMovie(s.ID)
 }
 
 // Returns the full data about a person scraped from their imdb page.
 //
 // - client : The imdb client to use for the request.
 func (s *SearchResult) FullPerson(client *ImdbClient) (*Person, error) {
-	return client.GetPerson(s.Id)
+	return client.GetPerson(s.ID)
 }
 
 // Checks wether result type is a title i.e movies/shows.
 func (s *SearchResult) IsTitle() bool {
-	return resultTypeTitleRegex.MatchString(s.Id)
+	return resultTypeTitleRegex.MatchString(s.ID)
 }
 
 // Checks wether result type is a person.
 func (s *SearchResult) IsPerson() bool {
-	return resultTypeNameRegex.MatchString(s.Id)
+	return resultTypeNameRegex.MatchString(s.ID)
 }

@@ -20,7 +20,7 @@ func TestAdvancedSearchTitle(t *testing.T) {
 }
 
 func TestAdvancedSearchName(t *testing.T) {
-	r, err := c.AdvancedSearchName(&imdb.AdvancedSearchNameOpts{Titles: []string{oppenheimerId}})
+	r, err := c.AdvancedSearchName(&imdb.AdvancedSearchNameOpts{Titles: []string{oppenheimerID}})
 	if err != nil {
 		t.Error(err)
 	}

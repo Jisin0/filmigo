@@ -4,6 +4,7 @@
 package imdb
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Jisin0/filmigo/encode"
@@ -14,67 +15,49 @@ import (
 )
 
 const (
-	//path for homepage of any imdb movie/show
-	movieBaseUrl = baseImdbURL + "/title"
+	// path for homepage of any imdb movie/show
+	movieBaseURL = baseImdbURL + "/title"
 )
 
 // Full movie object, contains data about a movie/show only available after scraping it's data with imdb.GetMovie().
 type Movie struct {
-	//Id of the movie
-	Id string
-
-	//Link to the movie
+	// ID of the movie
+	ID string
+	// Link to the movie
 	Link string
-
-	//Full title of the movie
+	// Full title of the movie
 	Title string `xpath:"//h1[@data-testid='hero__pageTitle']/span"`
-
-	//Year of release of the movie
+	// Year of release of the movie
 	Year string `xpath:"//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]"`
-
-	//Ratings of the movie in the format n/10
+	// Ratings of the movie in the format n/10
 	Rating string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']//div[@data-testid='hero-rating-bar__aggregate-rating__score']"`
-
-	//Rumber of votes the movie got
+	// Rumber of votes the movie got
 	Votes string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']/a/span/div/div[2]/div[3]"`
-
-	//The directors of the movie
+	// The directors of the movie
 	Directors types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Director')]/../div"`
-
-	//The writers of the movie
+	// The writers of the movie
 	Writers types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Writer')]/../div"`
-
-	//The main stars of the movie
+	// The main stars of the movie
 	Stars types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Star')]/../div"`
-
-	//Genres of the movie
+	// Genres of the movie
 	Genres types.Links `xpath:"//div[@data-testid='genres']/div[2]"`
-
-	//A short plot of the movie in a few lines
+	// A short plot of the movie in a few lines
 	Plot string `xpath:"/html/body//main//p[@data-testid='plot']//span[@data-testid='plot-xl']"`
-
-	//A string with details about the release including date and country
+	// A string with details about the release including date and country
 	Releaseinfo string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-releasedate']/div//a"`
-
-	//Origin of release, commonly the country
+	// Origin of release, commonly the country
 	Origin string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-origin']/div//a"`
-
-	//Official sites related to the movie/show
+	// Official sites related to the movie/show
 	OfficialSites types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='details-officialsites']/div/ul"`
-
-	//Languages in which the movie/show is available in
+	// Languages in which the movie/show is available in
 	Languages types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-languages']/div/ul"`
-
 	// Any alternative name of the movie.
 	Aka string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-akas']//span"`
-
-	//Locations at which the movie/show was filmed at
+	// Locations at which the movie/show was filmed at
 	Locations types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-filminglocations']/div/ul"`
-
-	//Companies which produced the movie
+	// Companies which produced the movie
 	Companies types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-companies']/div/ul"`
-
-	//Runtime of the move
+	// Runtime of the move
 	Runtime string `xpath:"//div[@data-testid='title-techspecs-section']/ul/li[@data-testid='title-techspec_runtime']/div"`
 }
 
@@ -84,7 +67,6 @@ type Movie struct {
 //
 // Returns an error on failed requests or if the movie wasn't found.
 func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
-
 	// Verify id or extract it if it's in a url
 	id = resultTypeTitleRegex.FindString(id)
 	if id == "" {
@@ -93,15 +75,15 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
 	var movie Movie
 
-	//Check cache for existing first
+	// Check cache for existing first
 	if !c.disabledCaching {
 		if err := c.cache.MovieCache.Load(id, &movie); err == nil {
 			return &movie, nil
 		}
 	}
 
-	//Get the webpage
-	url := movieBaseUrl + "/" + id
+	// Get the webpage
+	url := movieBaseURL + "/" + id
 
 	doc, err := doRequest(url)
 	if err != nil {
@@ -109,15 +91,23 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	}
 
 	movie = Movie{
-		Id:   id,
+		ID:   id,
 		Link: url,
 	}
 
-	movie = encode.Xpath(doc, movie).(Movie)
+	var ok bool
 
-	//Cache data for next time
+	movie, ok = encode.Xpath(doc, movie).(Movie)
+	if !ok {
+		return nil, errors.New("unknown type returned from encode.Xpath")
+	}
+
+	// Cache data for next time
 	if !c.disabledCaching {
-		c.cache.MovieCache.Save(id, movie)
+		err := c.cache.MovieCache.Save(id, movie)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	return &movie, nil
@@ -125,12 +115,14 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
 // executes a get request to given url and parses the response body.
 func doRequest(url string) (*html.Node, error) {
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request")
 	}
+
 	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
 	req.Header.Set("languages", "en-us,en;q=0.5")
+
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to make request")
@@ -138,9 +130,9 @@ func doRequest(url string) (*html.Node, error) {
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode == 404 {
+	if resp.StatusCode == statusCodeNotFound {
 		return nil, errors.Errorf("movie/person was not not found")
-	} else if resp.StatusCode != 200 {
+	} else if resp.StatusCode != statusCodeSuccess {
 		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
 	}
 

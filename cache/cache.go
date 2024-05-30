@@ -5,7 +5,6 @@ package cache
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -43,13 +42,14 @@ func (c *Cache) Save(id string, data interface{}) error {
 
 	// Serialize the data to JSON
 	filePath := filepath.Join(c.directory, id+".json")
+
 	jsonData, err := json.Marshal(cacheData)
 	if err != nil {
 		return fmt.Errorf("failed to serialize data: %v", err)
 	}
 
 	// Write the JSON data to a file
-	if err := ioutil.WriteFile(filePath, jsonData, 0644); err != nil {
+	if err := os.WriteFile(filePath, jsonData, 0o644); err != nil {
 		return fmt.Errorf("failed to write data to file: %v", err)
 	}
 
@@ -60,14 +60,16 @@ func (c *Cache) Save(id string, data interface{}) error {
 func (c *Cache) Load(id string, data interface{}) error {
 	// Read the JSON data from the file
 	filePath := filepath.Join(c.directory, id+".json")
-	jsonData, err := ioutil.ReadFile(filePath)
+
+	jsonData, err := os.ReadFile(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to read data from file: %v", err)
 	}
 
 	// Deserialize the JSON data
 	var cacheData CacheData
-	if err := json.Unmarshal(jsonData, &cacheData); err != nil {
+
+	if err = json.Unmarshal(jsonData, &cacheData); err != nil {
 		return fmt.Errorf("failed to deserialize data: %v", err)
 	}
 
@@ -81,6 +83,7 @@ func (c *Cache) Load(id string, data interface{}) error {
 	if err != nil {
 		return fmt.Errorf("failed to re-marshal inner data: %v", err)
 	}
+
 	if err := json.Unmarshal(dataBytes, data); err != nil {
 		return fmt.Errorf("failed to unmarshal inner data: %v", err)
 	}

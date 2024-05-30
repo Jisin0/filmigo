@@ -14,13 +14,13 @@ import "strings"
 // 	// Original relase year of the movie or show.
 // 	OriginalReleaseYear() string
 // 	// Poster url format of the movie or show.
-// 	Poster() PosterUrl
+// 	Poster() PosterURL
 // }
 
-// Full details of a url obtained from using GetTitleFromUrl()
-type UrlDetails struct {
+// Full details of a url obtained from using GetTitleFromURL()
+type URLDetails struct {
 	// graphql object id.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Meta description is a short sentence with the available streaming provider names and a greeting.
 	MetaDescripting string `json:"metaDescription,omitempty"`
 	// Meta keyword about the title concatanated with commas.
@@ -32,7 +32,7 @@ type UrlDetails struct {
 	// Secondary heading.
 	Heading2 string `json:"heading2,omitempty"`
 	// Raw html content with description and heading.
-	HtmlContent string `json:"htmlContent,omitempty"`
+	HTMLContent string `json:"htmlContent,omitempty"`
 	// Full data on the entity.
 	Data *Title `json:"node,omitempty"`
 }
@@ -40,11 +40,11 @@ type UrlDetails struct {
 // Data about any title on justwatch.
 type Title struct {
 	// Justwatch id of the title. for ex: ts20233.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Type of title either MOVIE, SHOW, SHOW_SEASON or SHOW_EPISODE.
 	Type string `json:"objectType,omitempty"`
 	// Numeric id of the title for ex: ts20233 becomes 202333.
-	NumericId int `json:"objectId,omitempty"`
+	NumericID int `json:"objectID,omitempty"`
 	// Data or content about the title.
 	Content *TitleContent `json:"content,omitempty"`
 	// Total number of available offers.
@@ -82,9 +82,9 @@ type Title struct {
 	// Details about the show only present for season type.
 	Show struct {
 		// Justwatch id of the show.
-		Id string `json:"id,omitempty"`
+		ID string `json:"id,omitempty"`
 		// Numeric value of the id.
-		NumericId int `json:"objectId,omitempty"`
+		NumericID int `json:"objectID,omitempty"`
 		// Type of the object in this case always SHOW.
 		Type string `json:"objectType,omitempty"`
 		// Content of the show.
@@ -104,20 +104,20 @@ type TitleContent struct {
 	Title string `json:"title,omitempty"`
 	// Original name of the title.
 	OriginalTitle string `json:"originalTitle,omitempty"`
-	// Url path of the title.
-	UrlPath string `json:"fullPath,omitempty"`
+	// URL path of the title.
+	URLPath string `json:"fullPath,omitempty"`
 	// A short description of the title .
 	Description string `json:"shortDescription,omitempty"`
 	// Year in which the title was released.
 	ReleaseYear int `json:"originalReleaseYear,omitempty"`
 	// Date on which the title was first released in the format yyyy-mm-dd
 	ReleaseDate string `json:"originalReleaseDate,omitempty"`
-	//Genres of the title like comedy, romance etc.
+	// Genres of the title like comedy, romance etc.
 	Genres *Genres `json:"genres,omitempty"`
 	// Unformatted poster url path.
-	Poster *PosterUrl `json:"posterUrl,omitempty"`
+	Poster *PosterURL `json:"posterURL,omitempty"`
 	// Formatted poster url path.
-	FullPoster *PosterUrl `json:"fullPosterUrl,omitempty"`
+	FullPoster *PosterURL `json:"fullPosterURL,omitempty"`
 	// Runtime or duration of the title in minutes.
 	Runtime int `json:"runtime,omitempty"`
 	// Age certification for ex: TV-MA.
@@ -145,7 +145,7 @@ type TitleContent struct {
 	// Clips from dailmotion.com . Justwatch gives priority to these on their own website.
 	DailymotionClips []*Clip `json:"dailymotionClips,omitempty"`
 	// External ids of the title on imdb and tmdb.
-	ExteranlIds *ExteranlIds `json:"externalIds,omitempty"`
+	ExteranlIDs *ExteranlIDs `json:"externalIDs,omitempty"`
 	// Countries in which the movie was produced.
 	ProductionCountries []string `json:"productionCountries,omitempty"`
 }
@@ -153,9 +153,9 @@ type TitleContent struct {
 // A single episode of a show.
 type Episode struct {
 	// Justwatch id of the episode. for ex: tse7685834.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Numeric value of the id.
-	NumericId int `json:"objectId,omitempty"`
+	NumericID int `json:"objectID,omitempty"`
 	// Content of the episode.
 	Content struct {
 		// Title of the episode.
@@ -173,8 +173,8 @@ type Episode struct {
 
 // Results from GetTitleOffers() query.
 type GetTitleOffersResult struct {
-	// Justwatch Id of the title.
-	Id string `json:"id"`
+	// Justwatch ID of the title.
+	ID string `json:"id"`
 	// Type name either Movie or Show.
 	TypeName string `json:"__typename"`
 	// Number of offers available for the title.
@@ -196,9 +196,9 @@ type GetTitleOffersResult struct {
 // Any streaming provider's offer for a movie or show.
 type Offer struct {
 	// Graphql id of the object.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Direct web url to the offer package.
-	Url string `json:"standardWebUrl,omitempty"`
+	URL string `json:"standardWebURL,omitempty"`
 	// Type indicates the type of offer .
 	Type string `json:"type,omitempty"`
 	// Retail price of the provider. The string is a well formatted price tag with the currency of the request country.
@@ -226,14 +226,14 @@ type Offer struct {
 // Basic details about an offer package.
 type Package struct {
 	// Graphql id of the type
-	Id string `json:"id,omitempty"`
-	// Id of the package.
-	PackageId int `json:"packageId,omitempty"`
+	ID string `json:"id,omitempty"`
+	// ID of the package.
+	PackageID int `json:"packageID,omitempty"`
 	// Clear user friendly name of the package for ex: Apple TV.
 	ClearName string `json:"clearName,omitempty"`
 	// Technical name of the package for ex: itunes.
 	TechnicalName string `json:"technicalName,omitempty"`
-	// Url path to the icon of the package.
+	// URL path to the icon of the package.
 	Icon *Icon `json:"icon,omitempty"`
 	// Shortname of the package.
 	ShortName string `json:"shortName,omitempty"`
@@ -242,9 +242,9 @@ type Package struct {
 // Basic data about a season that's included in the full result of a show.
 type SeasonPreview struct {
 	// Justwatch id of the season for ex: tss414472.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Numeric id.
-	NumericId int `json:"objectId,omitempty"`
+	NumericID int `json:"objectID,omitempty"`
 	// Type will be SHOW_SEASON.
 	Type string `json:"objectType,omitempty"`
 	// Number of episodes in the season.
@@ -258,9 +258,9 @@ type SeasonPreview struct {
 // Basic data about an episode that's included in the full result of a show or season.
 type EpisodePreview struct {
 	// Justwatch id of the season for ex: tss414472.
-	Id string `json:"id,omitempty"`
+	ID string `json:"id,omitempty"`
 	// Numeric id.
-	NumericId int `json:"objectId,omitempty"`
+	NumericID int `json:"objectID,omitempty"`
 	// Number of episodes in the season.
 	TotalEpisodeCount int `json:"totalEpisodeCount,omitempty"`
 	// Availability.
@@ -277,20 +277,20 @@ type Credit struct {
 	Name string `json:"name,omitempty"`
 	// Name of the character played by the person.
 	CharacterName string `json:"characterName,omitempty"`
-	// Justwatch Id of the person
-	Id int `json:"personId,omitempty"`
+	// Justwatch ID of the person
+	ID int `json:"personID,omitempty"`
 }
 
 // Video clip of the title.
 type Clip struct {
-	// Url to the video .
-	Url string `json:"sourceUrl,omitempty"`
+	// URL to the video .
+	URL string `json:"sourceURL,omitempty"`
 	// Name of the clip.
 	Name string `json:"name,omitempty"`
 	// Provider of the clip probably YOUTUBE or DAILYMOTION.
 	Provider string `json:"provider,omitempty"`
 	// Exteranl id of the clip on their respective platforms.
-	ExteranlId string `json:"externalId,omitempty"`
+	ExteranlID string `json:"externalID,omitempty"`
 }
 
 // Sores or ratings for the title on various platforms.
@@ -319,8 +319,8 @@ type Interactions struct {
 
 // Promoted bundle.
 type PromotedBundle struct {
-	// Direct Url to the bundle.
-	Url string `json:"promotionUrl,omitempty"`
+	// Direct URL to the bundle.
+	URL string `json:"promotionURL,omitempty"`
 }
 
 // Availability of the movie or show.
@@ -365,17 +365,17 @@ type StreamingChartInfo struct {
 	DaysInTop1000 int `json:"daysInTop1000,omitempty"`
 }
 
-// External Ids for the movie on imdb, tmdb etc.
-type ExteranlIds struct {
+// External IDs for the movie on imdb, tmdb etc.
+type ExteranlIDs struct {
 	// Imdb id.
-	ImdbId string `json:"imdbId,omitempty"`
+	ImdbID string `json:"imdbID,omitempty"`
 	// Tmdb id.
-	TmdbId string `json:"tmdbId,omitempty"`
+	TmdbID string `json:"tmdbID,omitempty"`
 }
 
 type Icon string
 
 // returns the direct url to the icon.
-func (i Icon) FullUrl() string {
-	return imageBaseUrl + strings.TrimSuffix(string(i), ".{format}")
+func (i Icon) FullURL() string {
+	return imageBaseURL + strings.TrimSuffix(string(i), ".{format}")
 }

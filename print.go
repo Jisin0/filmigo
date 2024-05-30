@@ -1,4 +1,4 @@
-//(c) Jisin0
+// (c) Jisin0
 // Pretty print structs to console.
 
 package filmigo
@@ -8,8 +8,8 @@ import (
 	"fmt"
 )
 
-// PrintJson prints out a struct in json.
-func PrintJson(val interface{}, indent string) {
+// PrintJSON prints out a struct in json.
+func PrintJSON(val interface{}, indent string) {
 	// Marshal the struct to JSON with indentation
 	jsonData, err := json.MarshalIndent(val, "", "  ")
 	if err != nil {

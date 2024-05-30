@@ -19,7 +19,7 @@ func (t *Movie) PrettyPrint() {
 
 	fmt.Print("\n\n", t.Plot, "\n\n")
 
-	fmt.Printf("ID: %s\n", t.Id)
+	fmt.Printf("ID: %s\n", t.ID)
 
 	if t.Releaseinfo != "" {
 		fmt.Printf("Released: %s\n", t.Releaseinfo)
@@ -32,5 +32,4 @@ func (t *Movie) PrettyPrint() {
 	if len(t.Genres) > 0 {
 		fmt.Printf("Genres: %s\n", t.Genres.ToString(", "))
 	}
-
 }

@@ -1,4 +1,4 @@
-//(c) Jisin0
+// (c) Jisin0
 // Types and functions for omdb search operations.
 
 package omdb
@@ -16,7 +16,6 @@ import (
 
 // Extra Options for an omdbapi search query.
 type SearchOpts struct {
-
 	// Type of result to return either "movie", "series" or "episode".
 	// Use omdb.ResultTypeXX values for reliablility.
 	Type string `url:"type"`
@@ -31,7 +30,6 @@ type SearchOpts struct {
 
 // Search results returned from omdb.Search.
 type SearchResult struct {
-
 	// List of results .
 	Results []*MoviePreview `json:"search"`
 
@@ -56,7 +54,6 @@ type SearchResult struct {
 
 // Minimal data about a movie returned from a search query.
 type MoviePreview struct {
-
 	// Title of the movie.
 	Title string `json:"title"`
 
@@ -64,7 +61,7 @@ type MoviePreview struct {
 	Year string `json:"year"`
 
 	//	Imdb id of the movie for ex: tt1285016.
-	ImdbId string `json:"imdbid"`
+	ImdbID string `json:"imdbid"`
 
 	// Type of result either "movie", "series" or "episode".
 	// use omdb.ResultTypeXX values for reliability when checking.
@@ -79,7 +76,6 @@ type MoviePreview struct {
 // - query : The query or keyword to search for.
 // - opts :  Extra options for the request
 func (c *OmdbClient) Search(query string, opts ...*SearchOpts) (*SearchResult, error) {
-
 	if query == "" {
 		return nil, errors.New("query value is empty")
 	}
@@ -88,9 +84,11 @@ func (c *OmdbClient) Search(query string, opts ...*SearchOpts) (*SearchResult, e
 		return nil, errors.New("no obdb api key provided")
 	}
 
-	var page int = 1
+	var (
+		page        = 1
+		extraParams string
+	)
 
-	var extraParams string
 	if len(opts) > 0 {
 		if opts[0].Page < 1 {
 			opts[0].Page = 1
@@ -98,7 +96,7 @@ func (c *OmdbClient) Search(query string, opts ...*SearchOpts) (*SearchResult, e
 			page = opts[0].Page
 		}
 
-		params, err := encode.UrlParams(*opts[0])
+		params, err := encode.URLParams(*opts[0])
 		if err != nil {
 			return nil, errors.New("failed to parse url parameters")
 		}
@@ -112,7 +110,7 @@ func (c *OmdbClient) Search(query string, opts ...*SearchOpts) (*SearchResult, e
 		fullURL = fullURL + "&" + extraParams
 	}
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	req, err := http.NewRequest("GET", fullURL, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build request")
 	}
@@ -122,7 +120,9 @@ func (c *OmdbClient) Search(query string, opts ...*SearchOpts) (*SearchResult, e
 		return nil, errors.Wrap(err, "failed to make request")
 	}
 
-	if resp.StatusCode != 200 {
+	defer resp.Body.Close()
+
+	if resp.StatusCode != statusCodeSuccess {
 		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
 	}
 
@@ -173,5 +173,5 @@ func (s *SearchResult) NextPage(client *OmdbClient) (*SearchResult, error) {
 //
 // - client : Omdb client to use for the request.
 func (m *MoviePreview) GetFull(client *OmdbClient) (*Movie, error) {
-	return client.GetMovie(&GetMovieOpts{Id: m.ImdbId})
+	return client.GetMovie(&GetMovieOpts{ID: m.ImdbID})
 }

@@ -42,5 +42,5 @@ func TestGetFull(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJson(res, "  ")
+	filmigo.PrintJSON(res, "  ")
 }

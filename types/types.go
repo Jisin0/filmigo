@@ -6,18 +6,17 @@ import "strings"
 
 // A url object i.e text + href
 type Link struct {
-
-	//The actual content
+	// The actual content
 	Text string
 
-	//The url or href
+	// The url or href
 	Href string
 }
 
 // A list of links.
 type Links []Link
 
-// Concatenate the Text of the links into a list seperated by given seperator.
+// Concatenate the Text of the links into a list separated by given separator.
 func (ls Links) ToString(sep string) string {
 	var s []string
 	for _, l := range ls {

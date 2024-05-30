@@ -1,4 +1,4 @@
-//(c) Jisin0
+// (c) Jisin0
 // Justwatch base and constants.
 
 package justwatch
@@ -6,14 +6,14 @@ package justwatch
 import "github.com/machinebox/graphql"
 
 const (
-	apiUrl = "https://apis.justwatch.com/graphql" // justwatch graphql api url
+	apiURL = "https://apis.justwatch.com/graphql" // justwatch graphql api url
 )
 
 var graphQLClient *graphql.Client
 
 // Initialize stuff
 func init() {
-	graphQLClient = graphql.NewClient(apiUrl)
+	graphQLClient = graphql.NewClient(apiURL)
 }
 
 // Options for configuring default behaviour of the justwatch client.

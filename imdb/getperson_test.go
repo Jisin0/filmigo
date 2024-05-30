@@ -2,8 +2,6 @@ package imdb_test
 
 import (
 	"testing"
-
-	"github.com/Jisin0/filmigo/imdb"
 )
 
 const (
@@ -11,7 +9,6 @@ const (
 )
 
 func TestGetPerson(t *testing.T) {
-	c := imdb.NewClient()
 	res, err := c.GetPerson(cillianMurphyID)
 	if err != nil {
 		t.Error(err)
@@ -19,5 +16,4 @@ func TestGetPerson(t *testing.T) {
 	}
 
 	t.Logf("%+v", res)
-
 }

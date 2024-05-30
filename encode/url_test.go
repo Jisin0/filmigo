@@ -7,8 +7,7 @@ import (
 	"github.com/Jisin0/filmigo/types"
 )
 
-func TestUrlParams(t *testing.T) {
-
+func TestURLParams(t *testing.T) {
 	type sample struct {
 		Range types.SearchRange `url:"release_date"`
 		List  []string          `url:"characters"`
@@ -19,7 +18,7 @@ func TestUrlParams(t *testing.T) {
 		List:  []string{"oppenheimer"},
 	}
 
-	v, e := encode.UrlParams(data)
+	v, e := encode.URLParams(data)
 	if e != nil {
 		t.Error(e)
 	}

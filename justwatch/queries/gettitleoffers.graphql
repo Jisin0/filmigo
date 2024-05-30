@@ -1,6 +1,6 @@
 
-query GetTitleOffers($nodeId: ID!, $country: Country!, $language: Language!, $filterFlatrate: OfferFilter!, $filterBuy: OfferFilter!, $filterRent: OfferFilter!, $filterFree: OfferFilter!, $platform: Platform! = WEB) {
-	node(id: $nodeId) {
+query GetTitleOffers($nodeID: ID!, $country: Country!, $language: Language!, $filterFlatrate: OfferFilter!, $filterBuy: OfferFilter!, $filterRent: OfferFilter!, $filterFree: OfferFilter!, $platform: Platform! = WEB) {
+	node(id: $nodeID) {
 	  id
 	  __typename
 	  ... on MovieOrShowOrSeasonOrEpisode {
@@ -50,7 +50,7 @@ query GetTitleOffers($nodeId: ID!, $country: Country!, $language: Language!, $fi
 	type
 	package {
 	  id
-	  packageId
+	  packageID
 	  clearName
 	  technicalName
 	  icon(profile: S100)

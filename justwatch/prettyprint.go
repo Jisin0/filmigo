@@ -7,7 +7,6 @@ import "fmt"
 
 // PrettyPrint prints out movie data in a neat interface.
 func (t *Title) PrettyPrint() {
-
 	content := t.Content
 
 	if content == nil {
@@ -43,7 +42,7 @@ func (t *Title) PrettyPrint() {
 
 	fmt.Print("\n\n", content.Description, "\n\n")
 
-	fmt.Printf("ID: %s\n", t.Id)
+	fmt.Printf("ID: %s\n", t.ID)
 
 	if content.ReleaseDate != "" {
 		fmt.Printf("Released: %s\n", content.ReleaseDate)
@@ -65,5 +64,4 @@ func (t *Title) PrettyPrint() {
 		fmt.Printf("Show: %s\n", t.Show.Content.Title)
 		fmt.Printf("Episodes: %v\n", t.TotalEpisodeCount)
 	}
-
 }
