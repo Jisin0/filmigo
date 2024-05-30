@@ -282,29 +282,10 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 
 	fullURL := fmt.Sprintf("%s?%s", advancedSearchNameURL, urlParams.Encode())
 
-	req, err := http.NewRequest("GET", fullURL, nil)
+	doc, err := doRequest(fullURL)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to create request")
+		return nil, err
 	}
-	req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0")
-	req.Header.Set("languages", "en-us,en;q=0.5")
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to make request")
-	}
-
-	if resp.StatusCode == 404 {
-		return nil, errors.Errorf("results not found")
-	} else if resp.StatusCode != 200 {
-		return nil, errors.Errorf("%v bad status code returned", resp.StatusCode)
-	}
-
-	doc, err := htmlquery.Parse(resp.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to parse document")
-	}
-
-	defer resp.Body.Close()
 
 	list, err := htmlquery.Query(doc, "//main/div[@role='presentation']/div[last()]//div[@role='tabpanel']//section/div[2]/div[2]/ul")
 	if err != nil || list == nil {
