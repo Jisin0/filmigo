@@ -1,13 +1,14 @@
 # Imdb
 
 The imdb package offers methods to browse imdb and get data about entities.
+[_Generated Docs_](https://pkg.go.dev/github.com/Jisin0/filmigo/imdb)
 
 ## Table Of Content
-- [Setup](https://github.com/Jisin0/filmigo/imdb#setup)
-- [Search](https://github.com/Jisin0/filmigo/imdb#search)
-- [Fetch Movie](https://github.com/Jisin0/filmigo/imdb#getmovie)
-- [Fetch Person](https://github.com/Jisin0/filmigo/imdb#getperson)
-- [Advanced Search](https://github.com/Jisin0/filmigo/imdb#advsearch)
+- [Setup](https://github.com/Jisin0/filmigo/tree/main/imdb#setup)
+- [Search](https://github.com/Jisin0/filmigo/tree/main/imdb#search)
+- [Fetch Movie](https://github.com/Jisin0/filmigo/tree/main/imdb#getmovie)
+- [Fetch Person](https://github.com/Jisin0/filmigo/tree/main/imdb#getperson)
+- [Advanced Search](https://github.com/Jisin0/filmigo/tree/main/imdb#advsearch)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.

@@ -12,6 +12,10 @@
     <a href="https://github.com/Jisin0/filmigo/tags">
         Releases
     </a>
+    •
+    <a href="https://pkg.go.dev/github.com/Jisin0/filmigo">
+        Documentation
+    </a>
 </p>
 
 # filmigo
@@ -41,7 +45,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/imdb)
+[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/imdb)
 
 ### Omdb
 ```go
@@ -54,7 +58,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/omdb)
+[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/omdb)
 
 ### JustWatch
 The justwatch id of a title can inly be obtained from search results. You can alsu use the justwatch url
@@ -69,7 +73,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/justwatch)
+[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/justwatch)
 
 ## Disclaimer
 - This product is only for educational purposes and is not meant for commercial usage .

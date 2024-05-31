@@ -1,11 +1,12 @@
 # Omdb
 The omdb package is an api wrapper for omdbapi.com.
+[_Generated Docs_](https://pkg.go.dev/github.com/Jisin0/filmigo/omdb)
 
 ## Table Of Content
-- [Setup](https://github.com/Jisin0/filmigo/omdb#setup)
-- [Search](https://github.com/Jisin0/filmigo/omdb#search)
-- [Fetch Movie](https://github.com/Jisin0/filmigo/omdb#getmovie)
-- [Fetch Title Offers](https://github.com/Jisin0/filmigo/omdb#getoffers)
+- [Setup](https://github.com/Jisin0/filmigo/tree/main/omdb#setup)
+- [Search](https://github.com/Jisin0/filmigo/tree/main/omdb#search)
+- [Fetch Movie](https://github.com/Jisin0/filmigo/tree/main/omdb#getmovie)
+- [Fetch Title Offers](https://github.com/Jisin0/filmigo/tree/main/omdb#getoffers)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.
