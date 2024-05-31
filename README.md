@@ -94,6 +94,9 @@ Please read the privacy policy of the respective platform before using this prod
 [TMDB](https://themoviedatabase.org) is not currently supported as there is already [go-tmdb](https://github.com/ryanbradynd05/go-tmdb/) 
 which provides full coverage of all api methods.
 
+## Contributing
+**filmigo** is an open-source project and your contribution is very much appreciated. If you'd like to contribute, simply fork the repository, commit your changes and send a pull request. If you have any questions, feel free to ask.
+
 ## License
 The MIT License (MIT)
 
