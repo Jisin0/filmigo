@@ -298,7 +298,7 @@ type Scoring struct {
 	// Imdb rating out of 10.
 	ImdbRating float32 `json:"imdbScore,omitempty"`
 	// Votes received on imdb
-	ImdbVotes int `json:"imdbVotes,omitempty"`
+	ImdbVotes float32 `json:"imdbVotes,omitempty"`
 	// Popularity rating on tmdb.
 	TmdbPopularity float32 `json:"tmdbPopularity,omitempty"`
 	// Rating on tmdb out of 10.

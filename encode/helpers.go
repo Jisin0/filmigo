@@ -1,5 +1,6 @@
 // (c) Jisin0
 // Helper methods for xpath configs.
+
 package encode
 
 import (

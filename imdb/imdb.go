@@ -1,6 +1,11 @@
 // (c) Jisin0
 // Imdb client and configurations.
 
+/*
+The imdb package is a collection of methods to get data from imdb using it's official api or webscraping.
+The only publicly exposed imdb has is for searching hence every other method relies on webscraping.
+The AdvancedSearch methods do not use an api either.
+*/
 package imdb
 
 import (
@@ -32,6 +37,9 @@ type ImdbClient struct {
 type ImdbClientOpts struct {
 	// Set this to true to disable caching results.
 	DisableCaching bool
+	// This field is the duration for which cached data is considered valid.
+	// Defaluts to 5 * time.Hour.
+	CacheExpiration time.Duration
 }
 
 const (
@@ -43,15 +51,22 @@ const (
 
 // NewClient returns a new client with given configs.
 func NewClient(o ...ImdbClientOpts) *ImdbClient {
-	var disableCaching bool
+	var (
+		disableCaching bool
+		cacheEpiration = defaultCacheExpiration
+	)
 
 	if len(o) > 0 {
 		disableCaching = o[0].DisableCaching
+
+		if o[0].CacheExpiration > 0 {
+			cacheEpiration = o[0].CacheExpiration
+		}
 	}
 
 	return &ImdbClient{
 		disabledCaching: disableCaching,
-		cache:           NewImdbCache(defaultCacheExpiration),
+		cache:           NewImdbCache(cacheEpiration),
 	}
 }
 

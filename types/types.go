@@ -1,5 +1,6 @@
 // (c) Jisin0
-// Global types and functions used across packages.
+
+/* Global types and functions used across packages. */
 package types
 
 import "strings"

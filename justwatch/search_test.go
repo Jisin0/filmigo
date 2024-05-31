@@ -10,7 +10,7 @@ import (
 
 var client *justwatch.JustwatchClient = justwatch.NewClient()
 
-const searchQuery = "50 shade"
+const searchQuery = "Inception"
 
 func TestSearch(t *testing.T) {
 	r, e := client.SearchTitle(searchQuery)

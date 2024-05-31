@@ -1,6 +1,11 @@
 // (c) Jisin0
 // Justwatch base and constants.
 
+/*
+Package justwatch uses justwathch's graphql api used on their website and apps.
+This api is not to be confused with their official streaming/partners api.
+This package currently only covers a handful of the available graphql queries.
+*/
 package justwatch
 
 import "github.com/machinebox/graphql"

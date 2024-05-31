@@ -13,6 +13,7 @@ import (
 const (
 	defaultCountryCode  = "US"
 	defaultLanguageCode = "en"
+	deafultSearchLimit  = 5
 )
 
 // Results from a search operation.
@@ -77,7 +78,7 @@ type SearchOptions struct {
 // - opts: Additional options for the request.
 func (c *JustwatchClient) SearchTitle(searchQuery string, opts ...*SearchOptions) (*SearchResults, error) {
 	var (
-		limit              = 5
+		limit              = deafultSearchLimit
 		country            = c.Country
 		language           = c.LangCode
 		noTitlesWithoutURL bool

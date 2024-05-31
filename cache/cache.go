@@ -1,5 +1,8 @@
 // (c) Jisin0
-// File-based caching used for scraping operations like GetMovie, GetPerson etc.
+
+/*
+Package cache offers easy-to-use file based caching through json to easily cache data with minimal effort.
+*/
 package cache
 
 import (

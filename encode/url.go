@@ -1,5 +1,6 @@
 // (c) Jisin0
 // Create url parameters from struct.
+
 package encode
 
 import (

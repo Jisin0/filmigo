@@ -1,6 +1,10 @@
 // (c) Jisin0
 // Base Client and methods.
 
+/*
+Package omdb is an api wrapper of the single rout Open Movie DataBase (omdapi.com).
+The package offers user friendly interfaces to send queries and helper methods to make working with results easier.
+*/
 package omdb
 
 import (
@@ -20,6 +24,9 @@ type OmdbClient struct {
 type OmdbClientOpts struct {
 	// Set this to true to disable caching results.
 	DisableCaching bool
+	// This field is the duration for which cached data is considered valid.
+	// Defaluts to 5 * time.Hour.
+	CacheExpiration time.Duration
 }
 
 const (
@@ -32,15 +39,22 @@ const (
 
 // NewClient returns a new client with given configs.
 func NewClient(apiKey string, o ...OmdbClientOpts) *OmdbClient {
-	var disableCaching bool
+	var (
+		disableCaching bool
+		cacheEpiration = defaultCacheExpiration
+	)
 
 	if len(o) > 0 {
 		disableCaching = o[0].DisableCaching
+
+		if o[0].CacheExpiration > 0 {
+			cacheEpiration = o[0].CacheExpiration
+		}
 	}
 
 	return &OmdbClient{
 		disabledCaching: disableCaching,
-		cache:           cache.NewCache(defaultCachePath, defaultCacheExpiration),
+		cache:           cache.NewCache(defaultCachePath, cacheEpiration),
 		apiKey:          apiKey,
 	}
 }

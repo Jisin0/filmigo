@@ -49,6 +49,7 @@ linters:
   disable-all: true
   enable:
     - bodyclose
+    - copyloopvar
     - deadcode
    # - depguard (absolute trash)
     - dogsled

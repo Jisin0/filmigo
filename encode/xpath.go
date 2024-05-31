@@ -1,5 +1,6 @@
 // (c) Jisin0
 // Helper methods to scrape a webpage using xpath in struct tags.
+
 package encode
 
 import (
