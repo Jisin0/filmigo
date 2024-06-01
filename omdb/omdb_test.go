@@ -12,13 +12,13 @@ var (
 )
 
 func init() {
-	// write your api key to apikey.txt to run tests
-	r, err := os.ReadFile("apikey.txt")
-	if err != nil {
-		panic("failed to open apikey file")
+	// Set your omdb api key as environment var to run tests
+	s := os.Getenv("OMDB_API_KEY")
+	if s == "" {
+		panic("OMDB_API_KEY not set")
 	}
 
-	apiKey = string(r)
+	apiKey = s
 
 	client = omdb.NewClient(apiKey)
 }
