@@ -8,7 +8,7 @@ The imdb package offers methods to browse imdb and get data about entities.
 - [Search](#search)
 - [Fetch Movie](#getmovie)
 - [Fetch Person](#getperson)
-- [Advanced Search](#advsearch)
+- [Advanced Search](#advanced-search)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.
@@ -60,7 +60,7 @@ Use this function to get a person using their imdb id. We'll use [nm0000206](htt
 client.GetPerson("nm0000206")
 ```
 
-### Advanced Search {#advsearch}
+### Advanced Search
 Imdb offers an advanced search page that allows filtering people and titles based on a wide variety of parameters.
 
 #### Titles
