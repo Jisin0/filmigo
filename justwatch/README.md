@@ -3,10 +3,10 @@ The justwatch package offers methods to browse justwatch and get data about enti
 [_Generated Docs_](https://pkg.go.dev/github.com/Jisin0/filmigo/justwatch)
 
 ## Table Of Content
-- [Setup](https://github.com/Jisin0/filmigo/tree/main/justwatch#setup)
-- [Search](https://github.com/Jisin0/filmigo/tree/main/justwatch#search)
-- [Fetch Movie](https://github.com/Jisin0/filmigo/tree/main/justwatch#getmovie)
-- [Fetch Title Offers](https://github.com/Jisin0/filmigo/tree/main/justwatch#getoffers)
+- [Setup](#setup)
+- [Search](#search)
+- [Fetch Movie](#getmovie)
+- [Fetch Title Offers](#getoffers)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.

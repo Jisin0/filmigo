@@ -19,6 +19,7 @@
 </p>
 
 # filmigo
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/filmigo)](https://goreportcard.com/report/github.com/Jisin0/filmigo) [![Go Reference](https://pkg.go.dev/badge/github.com/Jisin0/filmigo.svg)](https://pkg.go.dev/github.com/Jisin0/filmigo)
 
 **filmigo** is a library designed to make accessing movie databases as simple as possible in **Go**. 
 It provides coverage of many api methods with close to no configuration and in-built configurable caching.
@@ -45,7 +46,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/imdb)
+[_More Examples_](imdb/)
 
 ### Omdb
 ```go
@@ -58,7 +59,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/omdb)
+[_More Examples_](omdb/)
 
 ### JustWatch
 The justwatch id of a title can inly be obtained from search results. You can alsu use the justwatch url
@@ -73,7 +74,7 @@ func main() {
    movie.PrettyPrint()
 }
 ```
-[_More Examples_](https://github.com/Jisin0/filmigo/tree/main/justwatch)
+[_More Examples_](justwatch/)
 
 ## Disclaimer
 - This product is only for educational purposes and is not meant for commercial usage .
