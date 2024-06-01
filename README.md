@@ -27,7 +27,7 @@ It provides coverage of many api methods with close to no configuration and in-b
 ## Installation
 Install the latest version of **filmigo** from github.
 ```bash
-go get github.com/Jisin0/Filmigo@latest
+go get github.com/Jisin0/filmigo@latest
 ```
 
 ## Quickstart

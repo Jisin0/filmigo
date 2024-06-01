@@ -20,7 +20,7 @@ var linkStructType = reflect.TypeOf(types.Link{})
 //
 // - val interface : input data type.
 //
-// See https://github.com/Jisin/Filmigo/xpath for examples and full reference.
+// See https://github.com/Jisin/filmigo/xpath for examples and full reference.
 func Xpath(doc *html.Node, val any) any {
 	st := reflect.TypeOf(val)
 
