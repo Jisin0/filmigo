@@ -29,3 +29,6 @@ output.html
 
 # Api key files
 apikey.txt
+
+# Local unorganized tests
+local_test.go
