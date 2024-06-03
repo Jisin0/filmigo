@@ -59,8 +59,8 @@ func Xpath(doc *html.Node, target any) error {
 		path := args[0]
 
 		node, err := htmlquery.Query(doc, path)
-		if err != nil {
-			return err
+		if err != nil || node == nil {
+			continue
 		}
 
 		fieldType := field.Type
@@ -78,7 +78,7 @@ func Xpath(doc *html.Node, target any) error {
 			// If the field is of type []Link all inner a tags are extracted
 			// If field type is []string innertex of each li tag is extracted
 			if fieldType.Kind() == reflect.Slice && fieldType.Elem() == linkStructType {
-				links := getLinks(node)
+				links := GetXpathLinks(node)
 				lVal := reflect.Append(reflect.ValueOf(links))
 				v.FieldByName(field.Name).Set(lVal)
 			} else if fieldType.Kind() == reflect.Slice && fieldType.Elem().Kind() == reflect.String {

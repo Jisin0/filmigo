@@ -12,7 +12,7 @@ import (
 )
 
 // Returns a list of Link by searching for all a tags.
-func getLinks(node *html.Node) types.Links {
+func GetXpathLinks(node *html.Node) types.Links {
 	ls, e := htmlquery.QueryAll(node, ".//a")
 	if e != nil || len(ls) < 1 {
 		return []types.Link{}

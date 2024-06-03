@@ -78,28 +78,28 @@ type MovieJsonContent struct {
 	// A short plot of the movie in a few lines
 	Plot string `json:"description"`
 	// Trailer video for the movie or show.
-	Trailer Trailer `json:"trailer,omitempty"`
+	Trailer VideoObject `json:"trailer,omitempty"`
 	// Runtime of the move
 	Runtime string `json:"duration"`
 	// Tope review of the movie.
 	Review Review `json:"review,omitempty"`
 }
 
-// Trailer of a movie or show.
-type Trailer struct {
-	// Name of the trailer.
+// A video file about the entity.
+type VideoObject struct {
+	// Name of the video.
 	Name string `json:"name"`
 	// Url to create embedded video players.
 	EmbedURL string `json:"embedUrl"`
-	// Image url of the thumbnail of the trailer.
+	// Image url of the thumbnail of the video.
 	Thumbnail string `json:"thumbnailUrl"`
-	// Short description of the trailer.
+	// Short description of the video.
 	Description string `json:"description"`
-	// Duration of the trailer.
+	// Duration of the video.
 	Duration string `json:"duration"`
 	// Url of the video .
 	URL string `json:"url"`
-	// Timestamp of the upload time of the trailer.
+	// Timestamp of the upload time of the video.
 	// Use time.Parse(time.RFC3339Nano, UploadDate) to parse it.
 	UploadDate string `json:"uploadDate"`
 }
@@ -173,6 +173,10 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 		return nil, err
 	}
 
+	if doc == nil {
+		return nil, errors.New("movie or or person not found")
+	}
+
 	movie = Movie{
 		ID: id,
 	}
@@ -193,11 +197,11 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
 	detailsNode, err := htmlquery.Query(doc, "//section[@data-testid='Details']/div[@data-testid='title-details-section']")
 	if detailsNode != nil && err == nil {
-		encode.Xpath(doc, &movie.MovieDetailsSection)
+		encode.Xpath(detailsNode, &movie.MovieDetailsSection)
 	}
 
 	releaseYearNode, err := htmlquery.Query(doc, "//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]")
-	if detailsNode != nil && err == nil {
+	if releaseYearNode != nil && err == nil {
 		movie.ReleaseYear = htmlquery.InnerText(releaseYearNode)
 	}
 

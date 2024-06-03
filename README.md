@@ -78,7 +78,7 @@ func main() {
 
 ## Disclaimer
 - This product is only for educational purposes and is not meant for commercial usage .
-- This product uses the apis of imdb, omdb and juswatch but is by no means endorsed or certified by any of them.
+- This product uses the apis of imdb, omdb and juswatch but is by no means endorsed nor certified by any of them.
 - This product uses apis not intended for public use.
 - This product **does not** use justwatch's official [partners api](https://www.justwatch.com/us/JustWatch-Streaming-API).
 - This product comes with **no warranty**.

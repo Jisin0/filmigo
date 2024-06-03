@@ -4,10 +4,12 @@
 package imdb
 
 import (
+	"encoding/json"
 	"log"
 
 	"github.com/Jisin0/filmigo/encode"
 	"github.com/Jisin0/filmigo/types"
+	"github.com/antchfx/htmlquery"
 	"github.com/go-faster/errors"
 )
 
@@ -20,40 +22,60 @@ const (
 type Person struct {
 	// Imdb id of the user for ex: nm0000129
 	ID string
-	// URL to the person's imdb profile in the format imdb.com/name/{id}
-	Link string
-	// Full name of the person
-	Name string `xpath:"//h1[@data-testid='hero__pageTitle']/span"`
-	// List of roles performed by the person for ex: actor, producer, director etc.
-	Roles []string `xpath:"//h1[@data-testid='hero__pageTitle']/../ul|textlist"`
-	// Short bio of the person.
-	Bio string `xpath:"//div[@data-testid='bio-content']//div[contains(@class, 'inner')]"`
-	// Poster image of the person.
-	Poster string `xpath:"//div[starts-with(@class, 'ipc-poster')]//img|attr_src"`
 	// Links to movies/show the person is known for.
-	KnownFor types.Links `xpath:"//div[@data-testid='Filmography']//div[@data-testid='nm_flmg_kwn_for']//div[ends-with(@data-testid, 'container')]|linklist"`
-	// Personal details section
+	KnownFor types.Links `xpath:"|linklist"`
+	PersonJsonContent
+	PersonDetailsSection
+	PersonDYKSection
+}
 
-	// Official sites of the person.
-	OfficialSites types.Links `xpath:"//section[@data-testid='PersonalDetails']/div[2]/ul/li[@data-testid='details-officialsites']/div|linklist"`
-	// Height of the person.
-	Height string `xpath:"//section[@data-testid='PersonalDetails']/div[2]/ul/li[@data-testid='nm_pd_he']/div//span"`
-	// Date of birth . for ex : April 30, 1981
-	Birthday string `xpath:"//section[@data-testid='PersonalDetails']/div[2]/ul/li[@data-testid='nm_pd_bl']/div/ul/li"`
-	// Spouse of the person.
-	Spouse types.Links `xpath:"//section[@data-testid='PersonalDetails']/div[2]/ul/li[@data-testid='nm_pd_sp']/div|linklist"`
-	// Other works - usually a short sentence about a different work of the person.
-	OtherWorks string `xpath:"//section[@data-testid='PersonalDetails']/div[2]/ul/li[@data-testid='nm_pd_wrk']/div"`
-	// Did You Know section
-
+// Data to be scraped from the Did You Know section of an actor.
+type PersonDYKSection struct {
 	// A short trivia fact about the person.
-	Trivia string `xpath:"//section[@data-testid='DidYouKnow']/div[2]//li[@data-testid='name-dyk-trivia']/div"` // Trivia is always the first dyk hence the div[2]
+	Trivia string `xpath:"/div[2]//li[@data-testid='name-dyk-trivia']/div"` // Trivia is always the first dyk hence the div[2]
 	// A popular quote of the person. All quotes can be found at {link}/quotes.
-	Quote string `xpath:"//section[@data-testid='DidYouKnow']//li[@data-testid='name-dyk-quote']/div"`
+	Quote string `xpath:"//li[@data-testid='name-dyk-quote']/div"`
 	// A nickname of the person.
-	Nickname string `xpath:"//section[@data-testid='DidYouKnow']//li[@data-testid='name-dyk-nickname']/div"`
+	Nickname string `xpath:"//li[@data-testid='name-dyk-nickname']/div"`
 	// Any trademark features of the person.
-	Trademark string `xpath:"//section[@data-testid='DidYouKnow']//li[@data-testid='name-dyk-trademarks']/div"`
+	Trademark string `xpath:"//li[@data-testid='name-dyk-trademarks']/div"`
+}
+
+// Data to be scraped from a persons Details section.
+type PersonDetailsSection struct {
+	// Official sites of the person.
+	OfficialSites types.Links `xpath:"/li[@data-testid='details-officialsites']/div|linklist"`
+	// Height of the person.
+	Height string `xpath:"/li[@data-testid='nm_pd_he']/div//span"`
+	// Date of birth . for ex : April 30, 1981
+	Birthday string `xpath:"/li[@data-testid='nm_pd_bl']/div/ul/li"`
+	// Spouse of the person.
+	Spouse types.Links `xpath:"/li[@data-testid='nm_pd_sp']/div|linklist"`
+	// Other works - usually a short sentence about a different work of the person.
+	OtherWorks string `xpath:"/li[@data-testid='nm_pd_wrk']/div"`
+}
+
+// Json data available for the person the page.
+type PersonJsonContent struct {
+	// URL of the imdb page.
+	URL string `json:"url"`
+	// Name of the person.
+	Name string `json:"name"`
+	// URL of the main full-size poster image of the person.
+	Image string `json:"image"`
+	// Short description of the person.
+	Description string `json:"description"`
+	// A video about the person.
+	Video VideoObject `json:"video"`
+	// Headline for the person for ex: Cillian Murphy - Actor, Producer, Writer.
+	Headline string `json:"headLine"`
+	// Extra content about the person.
+	MainEntity struct {
+		// Job Titles of the person for ex: Actor, Producer, Director.
+		JobTitles []string `json:"jobTitles"`
+		// Date of birth of the person in yyyy-mm-dd format.
+		BirthDate string `json:"birthDate"`
+	} `json:"mainEntity"`
 }
 
 // Function to get the full details about a person using their id .
@@ -84,11 +106,30 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 	}
 
 	person = Person{
-		ID:   id,
-		Link: url,
+		ID: id,
 	}
 
-	encode.Xpath(doc, &person)
+	jsonDataNode := htmlquery.FindOne(doc, "//script[@type='application/ld+json']")
+	if jsonDataNode == nil {
+		return nil, errors.New("json data node not found")
+	}
+
+	json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &person.PersonJsonContent)
+
+	detailsNode, err := htmlquery.Query(doc, "//section[@data-testid='PersonalDetails']/div[2]/ul")
+	if detailsNode != nil && err == nil {
+		encode.Xpath(detailsNode, &person.PersonDetailsSection)
+	}
+
+	dykNode, err := htmlquery.Query(doc, "//section[@data-testid='DidYouKnow']")
+	if dykNode != nil && err == nil {
+		encode.Xpath(dykNode, &person.PersonDYKSection)
+	}
+
+	knownForNode, err := htmlquery.Query(doc, "//div[@data-testid='Filmography']//div[@data-testid='nm_flmg_kwn_for']//div[ends-with(@data-testid, 'container')]")
+	if knownForNode != nil && err == nil {
+		person.KnownFor = encode.GetXpathLinks(knownForNode)
+	}
 
 	// Cache data for next time
 	if !c.disabledCaching {
