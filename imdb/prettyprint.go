@@ -13,8 +13,8 @@ func (t *Movie) PrettyPrint() {
 		fmt.Printf("  (aka : %s)\n", t.Aka)
 	}
 
-	if t.Rating != "" {
-		fmt.Printf("⭐%s | %s❤️", t.Rating, t.Votes)
+	if t.Rating.Value != 0 {
+		fmt.Printf("⭐%v | %v❤️", t.Rating, t.Rating.Votes)
 	}
 
 	fmt.Print("\n\n", t.Plot, "\n\n")

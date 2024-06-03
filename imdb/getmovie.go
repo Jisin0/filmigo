@@ -21,18 +21,20 @@ const (
 
 // Full movie object, contains data about a movie/show only available after scraping it's data with imdb.GetMovie().
 type Movie struct {
+	//Type of the title possibble values are Movie, TVSeries etc.
+	Type string `json:"@type"`
 	// ID of the movie
 	ID string
 	// Link to the movie
-	Link string
+	URL string `json:"url"`
 	// Full title of the movie
-	Title string `xpath:"//h1[@data-testid='hero__pageTitle']/span"`
+	Title string `json:"name"`
+	// Url of the full size poster image.
+	PosterURL string `json:"image"`
 	// Year of release of the movie
 	Year string `xpath:"//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]"`
-	// Ratings of the movie in the format n/10
-	Rating string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']//div[@data-testid='hero-rating-bar__aggregate-rating__score']"`
-	// Rumber of votes the movie got
-	Votes string `xpath:"//div[@data-testid='hero-rating-bar__aggregate-rating']/a/span/div/div[2]/div[3]"`
+	// Ratings for the movie.
+	Rating Rating `json:"aggregateRating"`
 	// The directors of the movie
 	Directors types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Director')]/../div"`
 	// The writers of the movie
@@ -42,7 +44,7 @@ type Movie struct {
 	// Genres of the movie
 	Genres types.Links `xpath:"//div[@data-testid='genres']/div[2]"`
 	// A short plot of the movie in a few lines
-	Plot string `xpath:"/html/body//main//p[@data-testid='plot']//span[@data-testid='plot-xl']"`
+	Plot string `json:"description"`
 	// A string with details about the release including date and country
 	Releaseinfo string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-releasedate']/div//a"`
 	// Origin of release, commonly the country
@@ -59,6 +61,48 @@ type Movie struct {
 	Companies types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-companies']/div/ul"`
 	// Runtime of the move
 	Runtime string `xpath:"//div[@data-testid='title-techspecs-section']/ul/li[@data-testid='title-techspec_runtime']/div"`
+	// Tope review of the movie.
+	Review Review `json:"review"`
+}
+
+// Review of a movie or show.
+type Review struct {
+	// Item that was reviewed.
+	ItemReviewed ReviewItem `json:"itemReviewed"`
+	// Author of the review.
+	Author ReviewAuthor `json:"author"`
+	// Date on which the review was created in the format yyyy-mm-dd
+	Date string `json:"dateCreated"`
+	// Language in which the review is written.
+	Language string `json:"inLanguage"`
+	// Body or content of the review.
+	Body string `json:"reviewBody"`
+	// Ratings for the review.
+	Rating Rating `json:"reviewRating"`
+}
+
+// An item that was reviewed.
+type ReviewItem struct {
+	// Url of the item that was reviewed.
+	URL string `json:"url"`
+}
+
+// Author of a review.
+type ReviewAuthor struct {
+	// Name of the person.
+	Name string `json:"name"`
+}
+
+// Rating data for a title or review.
+type Rating struct {
+	// Number of votes. (absent for reviews)
+	Votes int64 `json:"ratingCount"`
+	// Worst rating received.
+	Worst int `json:"worstRating"`
+	// Best rating received.
+	Best int `json:"bestRating"`
+	// Actual value of the rating out of 10.
+	Value int `json:"ratingValue"`
 }
 
 // Function to get the full details about a movie/show using it's id .
@@ -91,8 +135,8 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	}
 
 	movie = Movie{
-		ID:   id,
-		Link: url,
+		ID:  id,
+		URL: url,
 	}
 
 	var ok bool
