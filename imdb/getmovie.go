@@ -4,6 +4,7 @@
 package imdb
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -19,8 +20,35 @@ const (
 	movieBaseURL = baseImdbURL + "/title"
 )
 
-// Full movie object, contains data about a movie/show only available after scraping it's data with imdb.GetMovie().
 type Movie struct {
+	//Imdb id of the movie .
+	ID string
+	// Years of release of the movie, A range for shows over multiple years.
+	ReleaseYear string
+	MovieJsonContent
+	MovieDetailsSection
+}
+
+// Data scraped from the details section of a movie using xpath.
+type MovieDetailsSection struct {
+	// A string with details about the release including date and country
+	Releaseinfo string `xpath:"//li[@data-testid='title-details-releasedate']/div//a"`
+	// Origin of release, commonly the country
+	Origin string `xpath:"//li[@data-testid='title-details-origin']/div//a"`
+	// Official sites related to the movie/show
+	OfficialSites types.Links `xpath:"//li[@data-testid='details-officialsites']/div/ul"`
+	// Languages in which the movie/show is available in
+	Languages types.Links `xpath:"//li[@data-testid='title-details-languages']/div/ul"`
+	// Any alternative name of the movie.
+	Aka string `xpath:"//li[@data-testid='title-details-akas']//span"`
+	// Locations at which the movie/show was filmed at
+	Locations types.Links `xpath:"//li[@data-testid='title-details-filminglocations']/div/ul"`
+	// Companies which produced the movie
+	Companies types.Links `xpath:"//li[@data-testid='title-details-companies']/div/ul"`
+}
+
+// Data scraped from the json attached in the script tag.
+type MovieJsonContent struct {
 	//Type of the title possibble values are Movie, TVSeries etc.
 	Type string `json:"@type"`
 	// ID of the movie
@@ -31,38 +59,49 @@ type Movie struct {
 	Title string `json:"name"`
 	// Url of the full size poster image.
 	PosterURL string `json:"image"`
-	// Year of release of the movie
-	Year string `xpath:"//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]"`
+	// Content rating class (currenly undocumented).
+	ContentRating string `json:"contentRating"`
+	// Date the movie was released on in yyyy-mm-dd format.
+	ReleaseDate string `json:"datePublished"`
+	// Keywords associated with the movie in a comma seperated list.
+	Keywords string `json:"keywords"`
 	// Ratings for the movie.
 	Rating Rating `json:"aggregateRating"`
 	// The directors of the movie
-	Directors types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Director')]/../div"`
+	Directors types.Links `json:"director"`
 	// The writers of the movie
-	Writers types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Writer')]/../div"`
+	Writers types.Links `json:"creator"`
 	// The main stars of the movie
-	Stars types.Links `xpath:"//div[@role='presentation']/ul//*[starts-with(text(), 'Star')]/../div"`
+	Actors types.Links `json:"actor"`
 	// Genres of the movie
-	Genres types.Links `xpath:"//div[@data-testid='genres']/div[2]"`
+	Genres []string `json:"genre"`
 	// A short plot of the movie in a few lines
 	Plot string `json:"description"`
-	// A string with details about the release including date and country
-	Releaseinfo string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-releasedate']/div//a"`
-	// Origin of release, commonly the country
-	Origin string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-origin']/div//a"`
-	// Official sites related to the movie/show
-	OfficialSites types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='details-officialsites']/div/ul"`
-	// Languages in which the movie/show is available in
-	Languages types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-languages']/div/ul"`
-	// Any alternative name of the movie.
-	Aka string `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-akas']//span"`
-	// Locations at which the movie/show was filmed at
-	Locations types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-filminglocations']/div/ul"`
-	// Companies which produced the movie
-	Companies types.Links `xpath:"//section[@data-testid='Details']/div[@data-testid='title-details-section']//li[@data-testid='title-details-companies']/div/ul"`
+	// Trailer video for the movie or show.
+	Trailer Trailer `json:"trailer,omitempty"`
 	// Runtime of the move
-	Runtime string `xpath:"//div[@data-testid='title-techspecs-section']/ul/li[@data-testid='title-techspec_runtime']/div"`
+	Runtime string `json:"duration"`
 	// Tope review of the movie.
-	Review Review `json:"review"`
+	Review Review `json:"review,omitempty"`
+}
+
+// Trailer of a movie or show.
+type Trailer struct {
+	// Name of the trailer.
+	Name string `json:"name"`
+	// Url to create embedded video players.
+	EmbedURL string `json:"embedUrl"`
+	// Image url of the thumbnail of the trailer.
+	Thumbnail string `json:"thumbnailUrl"`
+	// Short description of the trailer.
+	Description string `json:"description"`
+	// Duration of the trailer.
+	Duration string `json:"duration"`
+	// Url of the video .
+	URL string `json:"url"`
+	// Timestamp of the upload time of the trailer.
+	// Use time.Parse(time.RFC3339Nano, UploadDate) to parse it.
+	UploadDate string `json:"uploadDate"`
 }
 
 // Review of a movie or show.
@@ -135,15 +174,31 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	}
 
 	movie = Movie{
-		ID:  id,
-		URL: url,
+		ID: id,
 	}
 
-	var ok bool
+	// var ok bool
 
-	movie, ok = encode.Xpath(doc, movie).(Movie)
-	if !ok {
-		return nil, errors.New("unknown type returned from encode.Xpath")
+	// movie, ok = encode.Xpath(doc, movie).(Movie)
+	// if !ok {
+	// 	return nil, errors.New("unknown type returned from encode.Xpath")
+	// }
+
+	jsonDataNode := htmlquery.FindOne(doc, "//script[@type='application/ld+json']")
+	if jsonDataNode == nil {
+		return nil, errors.New("json data node not found")
+	}
+
+	json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &movie.MovieJsonContent)
+
+	detailsNode, err := htmlquery.Query(doc, "//section[@data-testid='Details']/div[@data-testid='title-details-section']")
+	if detailsNode != nil && err == nil {
+		encode.Xpath(doc, &movie.MovieDetailsSection)
+	}
+
+	releaseYearNode, err := htmlquery.Query(doc, "//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]")
+	if detailsNode != nil && err == nil {
+		movie.ReleaseYear = htmlquery.InnerText(releaseYearNode)
 	}
 
 	// Cache data for next time

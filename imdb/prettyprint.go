@@ -3,11 +3,14 @@
 
 package imdb
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // PrettyPrint prints out movie data in a neat interface.
 func (t *Movie) PrettyPrint() {
-	fmt.Printf("%s [%s]", t.Title, t.Year)
+	fmt.Printf("%s [%s]", t.Title, t.ReleaseYear)
 
 	if t.Aka != t.Title {
 		fmt.Printf("  (aka : %s)\n", t.Aka)
@@ -30,6 +33,6 @@ func (t *Movie) PrettyPrint() {
 	}
 
 	if len(t.Genres) > 0 {
-		fmt.Printf("Genres: %s\n", t.Genres.ToString(", "))
+		fmt.Printf("Genres: %s\n", strings.Join(t.Genres, ", "))
 	}
 }

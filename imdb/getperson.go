@@ -88,12 +88,7 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 		Link: url,
 	}
 
-	var ok bool
-
-	person, ok = encode.Xpath(doc, person).(Person)
-	if !ok {
-		return nil, errors.New("unknown type returned from encode.Xpath")
-	}
+	encode.Xpath(doc, &person)
 
 	// Cache data for next time
 	if !c.disabledCaching {

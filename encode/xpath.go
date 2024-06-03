@@ -4,6 +4,7 @@
 package encode
 
 import (
+	"errors"
 	"reflect"
 	"strings"
 
@@ -21,21 +22,18 @@ var linkStructType = reflect.TypeOf(types.Link{})
 // - val interface : input data type.
 //
 // See https://github.com/Jisin/filmigo/xpath for examples and full reference.
-func Xpath(doc *html.Node, val any) any {
-	st := reflect.TypeOf(val)
+func Xpath(doc *html.Node, target any) error {
+	rv := reflect.ValueOf(target)
+	if rv.Kind() != reflect.Pointer || rv.IsNil() {
+		return errors.New("input type is not a pointer")
+	}
 
-	// https://stackoverflow.com/questions/63421976
-	// v is the interface{}
-	v := reflect.ValueOf(&val).Elem()
-	// Allocate a temporary variable with type of the struct.
-	//
-	//	v.Elem() is the vale contained in the interface.
-	tmp := reflect.New(v.Elem().Type()).Elem()
-	// Copy the struct value contained in interface to
-	// the temporary variable.
-	tmp.Set(v.Elem())
+	st := reflect.TypeOf(target).Elem()
 
-	for i := 0; i < tmp.NumField(); i++ {
+	// Access the struct value within the interface
+	v := reflect.ValueOf(target).Elem()
+
+	for i := 0; i < v.NumField(); i++ {
 		field := st.Field(i)
 
 		args := strings.Split(field.Tag.Get("xpath"), "|")
@@ -61,18 +59,17 @@ func Xpath(doc *html.Node, val any) any {
 		path := args[0]
 
 		node, err := htmlquery.Query(doc, path)
-		if node == nil || err != nil {
-			continue
+		if err != nil {
+			return err
 		}
 
 		fieldType := field.Type
 
-		// Extra options are passed with a separator | in the xpath struct tag, for ex. src to get the src attr of a node
 		switch method {
 		case "attr":
 			for _, a := range node.Attr {
 				if a.Key == attr {
-					tmp.FieldByName(field.Name).SetString(a.Val)
+					v.FieldByName(field.Name).SetString(a.Val)
 					break
 				}
 			}
@@ -83,18 +80,16 @@ func Xpath(doc *html.Node, val any) any {
 			if fieldType.Kind() == reflect.Slice && fieldType.Elem() == linkStructType {
 				links := getLinks(node)
 				lVal := reflect.Append(reflect.ValueOf(links))
-				tmp.FieldByName(field.Name).Set(lVal)
+				v.FieldByName(field.Name).Set(lVal)
 			} else if fieldType.Kind() == reflect.Slice && fieldType.Elem().Kind() == reflect.String {
 				list := getTextList(node)
 				lVal := reflect.Append(reflect.ValueOf(list))
-				tmp.FieldByName(field.Name).Set(lVal)
+				v.FieldByName(field.Name).Set(lVal)
 			} else {
-				tmp.FieldByName(field.Name).SetString(htmlquery.InnerText(node))
+				v.FieldByName(field.Name).SetString(htmlquery.InnerText(node))
 			}
 		}
 	}
 
-	v.Set(tmp)
-
-	return val
+	return nil
 }

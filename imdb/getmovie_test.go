@@ -2,6 +2,8 @@ package imdb_test
 
 import (
 	"testing"
+
+	"github.com/Jisin0/filmigo"
 )
 
 const (
@@ -15,5 +17,5 @@ func TestGetMovie(t *testing.T) {
 		t.Failed()
 	}
 
-	res.PrettyPrint()
+	filmigo.PrintJSON(res, "  ")
 }
