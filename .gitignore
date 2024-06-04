@@ -26,6 +26,7 @@ imdb/.imdbcache/
 
 # Sample output files
 output.html
+output.json
 
 # Api key files
 apikey.txt

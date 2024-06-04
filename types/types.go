@@ -8,10 +8,9 @@ import "strings"
 // A url object i.e text + href
 type Link struct {
 	// The actual content
-	Text string
-
+	Text string `json:"name"`
 	// The url or href
-	Href string
+	Href string `json:"url"`
 }
 
 // A list of links.

@@ -16,18 +16,16 @@ func TestXpath(t *testing.T) {
 	}
 
 	if doc != nil {
-		type sampleData struct {
+		type sampleType struct {
 			InnerText  string      `xpath:"//p[contains(@class, 'substring')]"`
 			Attribute  string      `xpath:"//p[last()]|attr_my-attr"`
 			LinkList   types.Links `xpath:"//span[@class='sample']"`
 			StringList []string    `xpath:"//ul"`
 		}
 
-		res, ok := encode.Xpath(doc, sampleData{}).(sampleData)
-		if !ok {
-			t.Errorf("unknown type returned")
-			t.FailNow()
-		}
+		var res sampleType
+
+		encode.Xpath(doc, &res)
 
 		if res.Attribute == "" || res.InnerText == "" || len(res.LinkList) < 3 || len(res.StringList) < 3 {
 			t.Errorf("xpath failed with output : %+v", res)
