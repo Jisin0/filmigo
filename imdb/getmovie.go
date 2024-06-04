@@ -137,11 +137,11 @@ type Rating struct {
 	// Number of votes. (absent for reviews)
 	Votes int64 `json:"ratingCount"`
 	// Worst rating received.
-	Worst int `json:"worstRating"`
+	Worst float32 `json:"worstRating"`
 	// Best rating received.
-	Best int `json:"bestRating"`
+	Best float32 `json:"bestRating"`
 	// Actual value of the rating out of 10.
-	Value int `json:"ratingValue"`
+	Value float32 `json:"ratingValue"`
 }
 
 // Function to get the full details about a movie/show using it's id .
