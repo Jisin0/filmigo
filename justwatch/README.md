@@ -5,8 +5,8 @@ The justwatch package offers methods to browse justwatch and get data about enti
 ## Table Of Content
 - [Setup](#setup)
 - [Search](#search)
-- [Fetch Movie](#getmovie)
-- [Fetch Title Offers](#getoffers)
+- [Fetch Movie](#get-title)
+- [Fetch Title Offers](#get-title-offers)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.
@@ -36,7 +36,7 @@ client.SearchTitles("inception")
 - Country : Use a country code for the specific request (uses client's country by default).
 - LangCode : Use a language code for the specific request (uses client's LangCode by default).
 
-### Fetch Movie {#getmovie}
+### Get Title
 You can fetch a title by it's id or it's url. Justwatch ids are only used internally unlike imdb that exclusively use this to identify titles.
 
 #### By ID
@@ -60,7 +60,7 @@ client.GetTitleFromURL("https://www.justwatch.com/us/movie/inception")
 - Country : Use a country code for the specific request (uses client's country by default).
 - LangCode : Use a language code for the specific request (uses client's LangCode by default).
 
-### Get Offers {#getoffers}
+### Get Title Offers
 Use this function to get offers for a title using it's justwatch id. We'll use [tm820952](https://www.justwatch.com/us/movie/inception) for this example.
 ```go
 client.GetTitleOffers("tm820952")

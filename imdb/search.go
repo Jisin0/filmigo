@@ -55,9 +55,12 @@ type SearchResult struct {
 }
 
 type Image struct {
-	Height   int    `json:"height"`
-	ImageURL string `json:"imageURL"`
-	Width    int    `json:"width"`
+	// Height of the image.
+	Height int `json:"height"`
+	// URL of the image.
+	URL string `json:"imageURL"`
+	// Width of the image.
+	Width int `json:"width"`
 }
 
 type Video struct {
