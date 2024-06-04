@@ -39,9 +39,9 @@ root of each package.
 ```go
 import "github.com/Jisin0/filmigo/imdb"
 
-client := imdb.NewClient()
-
 func main() {
+   client := imdb.NewClient()
+
    movie, _ := client.GetMovie("t1375666")
    movie.PrettyPrint()
 }
@@ -52,9 +52,9 @@ func main() {
 ```go
 import "github.com/Jisin0/filmigo/omdb"
 
-client := omdb.NewClient("your_api_key")
-
 func main() {
+   client := omdb.NewClient("your_api_key")
+
    movie, _ := client.GetMovie("t1375666")
    movie.PrettyPrint()
 }
@@ -67,9 +67,9 @@ of the movie which is more common within justwatch.
 ```go
 import "github.com/Jisin0/filmigo/justwatch"
 
-client := justwatch.NewClient()
-
 func main() {
+   client := justwatch.NewClient()
+
    movie, _ := client.GetTitle("tm92641")
    movie.PrettyPrint()
 }

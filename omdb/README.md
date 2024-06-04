@@ -6,7 +6,6 @@ The omdb package is an api wrapper for omdbapi.com.
 - [Setup](#setup)
 - [Search](#search)
 - [Fetch Movie](#getmovie)
-- [Fetch Title Offers](#getoffers)
 
 ## Guide
 Here's a short guide of the available methods and it's usage. All options are passed in the optional field of each function.
@@ -35,7 +34,7 @@ client.Search("inception")
 - Year : Year of release of the movie.
 - Page : Results page to return.
 
-### Fetch Movie {#getmovie}
+### GetMovie
 You can fetch a movie by it's imdb id or it's exact title. Either ID or Title field must be set in request options.
 ```go
 opts := omdb.GetMovieOpts{
