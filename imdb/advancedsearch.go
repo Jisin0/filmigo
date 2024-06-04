@@ -4,10 +4,9 @@
 package imdb
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/Jisin0/filmigo/encode"
 	"github.com/Jisin0/filmigo/types"
@@ -73,20 +72,62 @@ type AdvancedSearchTitleOpts struct {
 
 // Single result from the AdvancedSearchTitle result list.
 type AdvancedSearchTitleResult struct {
-	// Index number of the item.
-	Index int
-	// Title: Name of the movie/show or person.
-	Title string
+	// Indicates wether the title can be rated on imdb.
+	CanRate bool `json:"canRate"`
+	// Parental certificate of the title: 15 indicates TV-MA, 12 indicates PG-13, 18 indicates TV-MA.
+	Certificate string `json:"certificate"`
+	// The year in which a TVShow ended. Only for Series and Mini-Series.
+	EndYear int `json:"endYear"`
+	// Genres of the title.
+	Genres []string `json:"genres"`
+	// Indicates wether the movie has onli watching option (highly inaccurate).
+	HasWatchOption bool `json:"hasWatchOption"`
+	// Full original Title of the movie/show.
+	OriginalTitle string `json:"originalTitleText"`
+	// Plot of the movie/show.
+	Plot string `json:"plot"`
 	// Image: Poster image of a title or profile image of a person.
-	Image string
-	// Link: Link to the title or person's imdb page.
-	Link string
-	// Metadata: Metadata for titles containing the year of release, duration and us certificate.
-	Metadata []string
-	// Rating: A string containing rating info for ex: 7.5 (35K).
-	Rating string
-	// Description: A description of the title or person.
-	Description string
+	Image AdvSearchImage `json:"primaryImage"`
+	// Rating data about the title.
+	Rating struct {
+		// Value of rating out of 10.
+		Value int `json:"aggregateRating"`
+		// Number of votes received for the title.
+		Votes int64 `json:"voteCount"`
+	} `json:"ratingSummary"`
+	// Year in which the title was first released.
+	ReleaseYear int `json:"releaseYear"`
+	// Runtime of the title in minutes.
+	Runtime int `json:"runtime"`
+	// Imdb id of the title.
+	ID string `json:"titleId"`
+	// Title of the movie or show.
+	Title string `json:"titleText"`
+	// Data about the type of title.
+	Type struct {
+		// Indicates wether the title can have episodes.
+		CanHaveEpisodes bool `json:"canHaveEpisodes"`
+		// Id of the type. Possible values include movie, tvSeries, tvMiniSeries etc.
+		ID string `json:"id"`
+		// User-Friendly text about the type for ex: TV Series for tvSeries.
+		Text string `json:"text"`
+	} `json:"titleType"`
+	// Video id of the trailer of the title.
+	TrailerID string `json:"trailerId"`
+}
+
+// Poster image of an AvancedSearch result.
+type AdvSearchImage struct {
+	// Caption of the image.
+	Caption string `json:"caption"`
+	// Height of the image in pixels.
+	Height int `json:"height"`
+	// ID of the image (not sure where to use this)
+	ID string `json:"id"`
+	// URL of the image.
+	URL string `json:"url"`
+	// WIdth of the image in pixels.
+	Width int `json:"width"`
 }
 
 // AdvancedSearchTitle uses the search page to search for titles using many configuration options. Use SearchX methods for simple fast searches using the api.
@@ -124,67 +165,33 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 
 	defer resp.Body.Close()
 
-	list, err := htmlquery.Query(doc, "//main/div[@role='presentation']/div[last()]//div[@role='tabpanel']//section/div[2]/div[2]/ul")
-	if err != nil || list == nil {
-		return nil, err
+	dataNode := htmlquery.FindOne(doc, "//script[@id='__NEXT_DATA__']")
+	if dataNode == nil {
+		return nil, errors.New("results not found")
 	}
 
-	elements, err := htmlquery.QueryAll(list, "//div[ends-with(@class, 'dli-parent')]")
-	if err != nil {
-		return nil, errors.Wrap(err, "failed elements query")
+	// temporary type to get to deeply nested results.
+	// using a third party lib like gjson should be considered.
+	type a struct {
+		Props struct {
+			PropsPage struct {
+				SearchResults struct {
+					TitleResults struct {
+						Items []*AdvancedSearchTitleResult `json:"titleListItems"`
+					} `json:"titleResults"`
+				} `json:"searchResults"`
+			} `json:"pageProps"`
+		} `json:"props"`
 	}
 
-	var results []*AdvancedSearchTitleResult
+	var data a
 
-	for _, e := range elements {
-		var item AdvancedSearchTitleResult
+	json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
 
-		if posterNode, _ := htmlquery.Query(e, "//img"); posterNode != nil {
-			for _, a := range posterNode.Attr {
-				if a.Key == "src" {
-					item.Image = a.Val
-				}
-			}
-		}
+	results := data.Props.PropsPage.SearchResults.TitleResults.Items
 
-		if titleNode, _ := htmlquery.Query(e, "//h3"); titleNode != nil {
-			s := htmlquery.InnerText(titleNode)
-			if split := strings.SplitN(s, ".", 2); len(split) > 1 {
-				n, _ := strconv.Atoi(split[0])
-
-				item.Index = n
-				s = strings.TrimSpace(split[1])
-			}
-
-			item.Title = s
-
-			aNode, _ := htmlquery.Query(titleNode, "/..")
-			for _, a := range aNode.Attr {
-				if a.Key == href {
-					item.Link = baseImdbURL + a.Val
-				}
-			}
-		}
-
-		if metadataNode, _ := htmlquery.Query(e, "//div[ends-with(@class, 'dli-title-metadata')]"); metadataNode != nil {
-			var items []string
-
-			for _, span := range htmlquery.Find(metadataNode, "/span") {
-				items = append(items, htmlquery.InnerText(span))
-			}
-
-			item.Metadata = items
-		}
-
-		if ratingsNode, _ := htmlquery.Query(e, "//span[starts-with(@data-testid, 'ratingGroup')]"); ratingsNode != nil {
-			item.Rating = htmlquery.InnerText(ratingsNode)
-		}
-
-		if descriptionNode, _ := htmlquery.Query(e, "/div[last()]//div[contains(@class, 'inner')]"); descriptionNode != nil {
-			item.Description = htmlquery.InnerText(descriptionNode)
-		}
-
-		results = append(results, &item)
+	if len(results) < 1 {
+		return results, errors.New("results not found")
 	}
 
 	return results, nil
@@ -194,7 +201,7 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 //
 // - client : Client to make imdb requests through.
 func (s *AdvancedSearchTitleResult) FullTitle(client *ImdbClient) (*Movie, error) {
-	return client.GetMovie(s.Link)
+	return client.GetMovie(s.ID)
 }
 
 // Options for the AdvancedSearchName query see https://imdb.com/search/title to see the list and syntax for each option.
@@ -224,27 +231,41 @@ type AdvancedSearchNameOpts struct {
 }
 
 // Single results item from an AdvancedSearchName results list.
-type AdvacedSearchNameResult struct {
-	// Index number of the item.
-	Index int
-	// Title: Name of the movie/show or person.
-	Title string
-	// Image: Poster image of a title or profile image of a person.
-	Image string
+type AdvancedSearchNameResult struct {
+	// Title: Name of the person.
+	Title string `json:"nameText"`
+	// Bio or short decription of the person.
+	Bio string `json:"bio"`
+	// Data about a title the person is known for.
+	KnownFor struct {
+		// Indicates wether the title can have episodes.
+		CanHaveEpisodes bool `json:"canHaveEpisodes"`
+		// Orginal or full title of the movie or show.
+		OriginalTitle string `json:"originalTitle"`
+		// Imdb ID of the title.
+		ID string `json:"titleId"`
+		// Name of the title.
+		Title string `json:"titleText"`
+		// Range of years in which the title was released.
+		YearRange struct {
+			// Year in which the title was first released.
+			ReleaseYear int `json:"year"`
+			// Year in which a series ended or last broadcasted.
+			EndYear int `json:"endYear"`
+		} `json:"yearRange"`
+	} `json:"knownFor"`
+	// Imdb ID of the person.
+	ID string `json:"nameId"`
+	// Image: Profile image of a person.
+	Image AdvSearchImage `json:"primaryImage"`
 	// Professions: Roles taken by a person for ex: Director, Actress, Producer.
-	Professions []string
-	// Top title of a actor/actress. Only for people/names.
-	TopTitle types.Link
-	// Link: Link to the title or person's imdb page.
-	Link string
-	// Description: A description of the title or person.
-	Description string
+	Professions []string `json:"primaryProfessions"`
 }
 
 // AdvancedSearchName uses the search page to search for names using many configuration options. Use SearchX methods for simple fast searches using the api.
 //
 // opts - configure search options.
-func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedSearchNameResult, error) {
+func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvancedSearchNameResult, error) {
 	urlParams, _ := encode.URLParams(*opts)
 	urlParams = encode.URLMapParams(opts.ExtraParams, urlParams)
 
@@ -255,77 +276,33 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 		return nil, err
 	}
 
-	list, err := htmlquery.Query(doc, "//main/div[@role='presentation']/div[last()]//div[@role='tabpanel']//section/div[2]/div[2]/ul")
-	if err != nil || list == nil {
-		return nil, errors.Wrap(err, "failed to find people list")
+	dataNode := htmlquery.FindOne(doc, "//script[@id='__NEXT_DATA__']")
+	if dataNode == nil {
+		return nil, errors.New("results not found")
 	}
 
-	elements, err := htmlquery.QueryAll(list, "//div[ends-with(@class, 'dli-parent')]")
-	if err != nil {
-		return nil, errors.Wrap(err, "failed elements query")
+	// temporary type to get to deeply nested results.
+	// using a third party lib like gjson should be considered.
+	type a struct {
+		Props struct {
+			PropsPage struct {
+				SearchResults struct {
+					NameResults struct {
+						Items []*AdvancedSearchNameResult `json:"nameListItems"`
+					} `json:"nameResults"`
+				} `json:"searchResults"`
+			} `json:"pageProps"`
+		} `json:"props"`
 	}
 
-	var results []*AdvacedSearchNameResult
+	var data a
 
-	for _, e := range elements {
-		var item AdvacedSearchNameResult
+	json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
 
-		if posterNode, _ := htmlquery.Query(e, "//img"); posterNode != nil {
-			for _, a := range posterNode.Attr {
-				if a.Key == "src" {
-					item.Image = a.Val
-				} else if a.Key == href {
-					item.Link = a.Val
-				}
-			}
-		}
+	results := data.Props.PropsPage.SearchResults.NameResults.Items
 
-		if titleNode, _ := htmlquery.Query(e, "//h3"); titleNode != nil {
-			s := htmlquery.InnerText(titleNode)
-			if split := strings.SplitN(s, ".", 2); len(split) > 1 {
-				n, _ := strconv.Atoi(split[0])
-
-				item.Index = n
-				s = strings.TrimSpace(split[1])
-			}
-
-			item.Title = s
-
-			aNode, _ := htmlquery.Query(titleNode, "/..")
-			for _, a := range aNode.Attr {
-				if a.Key == href {
-					item.Link = baseImdbURL + a.Val
-				}
-			}
-		}
-
-		if professionsNode, _ := htmlquery.Query(e, "//ul[@data-testid='nlib-professions']"); professionsNode != nil {
-			var items []string
-			for _, li := range htmlquery.Find(professionsNode, "/li") {
-				items = append(items, htmlquery.InnerText(li))
-			}
-
-			item.Professions = items
-		}
-
-		if topTitleNode, _ := htmlquery.Query(e, "//a[@data-testid='nlib-known-for-title']"); topTitleNode != nil {
-			var topTitle types.Link
-			topTitle.Text = htmlquery.InnerText(topTitleNode)
-
-			for _, a := range topTitleNode.Attr {
-				if a.Key == href {
-					topTitle.Href = baseImdbURL + a.Val
-				}
-			}
-
-			item.TopTitle = topTitle
-		}
-
-		if descriptionNode, _ := htmlquery.Query(e, "/div[last()]//div[contains(@class, 'inner')]"); descriptionNode != nil {
-			item.Description = htmlquery.InnerText(descriptionNode)
-		}
-
-		results = append(results, &item)
+	if len(results) < 1 {
+		return results, errors.New("results not found")
 	}
 
 	return results, nil
@@ -334,6 +311,6 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*AdvacedS
 // FullPerson returns the full data about a title scraped from it's imdb page.
 //
 // - client : Client to make imdb requests through.
-func (s *AdvancedSearchTitleResult) FullPerson(client *ImdbClient) (*Person, error) {
-	return client.GetPerson(s.Link)
+func (s *AdvancedSearchNameResult) FullPerson(client *ImdbClient) (*Person, error) {
+	return client.GetPerson(s.ID)
 }

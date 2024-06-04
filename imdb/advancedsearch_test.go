@@ -1,6 +1,7 @@
 package imdb_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/Jisin0/filmigo/imdb"
@@ -8,25 +9,63 @@ import (
 )
 
 func TestAdvancedSearchTitle(t *testing.T) {
-	r, err := c.AdvancedSearchTitle(&imdb.AdvancedSearchTitleOpts{Genres: []string{constants.TitleGenreAction}, ExtraParams: map[string]any{"plot": "guns"}})
-	if err != nil {
-		t.Error(err)
+	testData := []imdb.AdvancedSearchTitleOpts{
+		{Genres: []string{constants.TitleGenreAction}, ExtraParams: map[string]any{"plot": "guns"}},
+		{CastOrCrew: []string{cillianMurphyID}},
+		{TitleName: "aksjgka"}, // bad data
 	}
 
-	if len(r) > 0 {
-		t.Logf("%+v", r[0])
-		t.Logf("%v more results", len(r)-1)
+	lastIndex := len(testData) - 1 // item at this index should fail.
+
+	for i, o := range testData {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			_, err := c.AdvancedSearchTitle(&o)
+			if err != nil {
+				// if item is last error is expected.
+				if i == lastIndex {
+					t.Log("error as expected")
+				} else {
+					t.Errorf("item %v returned unexpected error %v", i, err)
+				}
+			} else {
+				if i == lastIndex {
+					t.Errorf("error expected for item %v but results found", i)
+				} else {
+					t.Logf("item %v succesfully returned", i)
+				}
+			}
+		})
+
 	}
 }
 
 func TestAdvancedSearchName(t *testing.T) {
-	r, err := c.AdvancedSearchName(&imdb.AdvancedSearchNameOpts{Titles: []string{oppenheimerID}})
-	if err != nil {
-		t.Error(err)
+	testData := []imdb.AdvancedSearchNameOpts{
+		{Titles: []string{oppenheimerID}},
+		{Awards: []string{constants.NameAwardBestActressNominated}},
+		{Name: "shkjag"}, // should fail
 	}
 
-	if len(r) > 0 {
-		t.Logf("%+v", r[0])
-		t.Logf("%v more results", len(r)-1)
+	lastIndex := len(testData) - 1 // item at this index should fail.
+
+	for i, o := range testData {
+		t.Run(fmt.Sprint(i), func(t *testing.T) {
+			_, err := c.AdvancedSearchName(&o)
+			if err != nil {
+				// if item is last error is expected.
+				if i == lastIndex {
+					t.Log("error as expected")
+				} else {
+					t.Errorf("item %v returned unexpected error %v", i, err)
+				}
+			} else {
+				if i == lastIndex {
+					t.Errorf("error expected for item %v but results found", i)
+				} else {
+					t.Logf("item %v succesfully returned", i)
+				}
+			}
+		})
+
 	}
 }
