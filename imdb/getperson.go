@@ -24,7 +24,7 @@ type Person struct {
 	ID string
 	// Links to movies/show the person is known for.
 	KnownFor types.Links `xpath:"|linklist"`
-	PersonJsonContent
+	PersonJSONContent
 	PersonDetailsSection
 	PersonDYKSection
 }
@@ -55,8 +55,8 @@ type PersonDetailsSection struct {
 	OtherWorks string `xpath:"/li[@data-testid='nm_pd_wrk']/div"`
 }
 
-// Json data available for the person the page.
-type PersonJsonContent struct {
+// JSON data available for the person the page.
+type PersonJSONContent struct {
 	// URL of the imdb page.
 	URL string `json:"url"`
 	// Name of the person.
@@ -114,16 +114,25 @@ func (c *ImdbClient) GetPerson(id string) (*Person, error) {
 		return nil, errors.New("json data node not found")
 	}
 
-	json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &person.PersonJsonContent)
+	err = json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &person.PersonJSONContent)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal results data")
+	}
 
 	detailsNode, err := htmlquery.Query(doc, "//section[@data-testid='PersonalDetails']/div[2]/ul")
 	if detailsNode != nil && err == nil {
-		encode.Xpath(detailsNode, &person.PersonDetailsSection)
+		err = encode.Xpath(detailsNode, &person.PersonDetailsSection)
+		if err != nil {
+			return nil, errors.Wrap(err, "error while scraping data with xpath")
+		}
 	}
 
 	dykNode, err := htmlquery.Query(doc, "//section[@data-testid='DidYouKnow']")
 	if dykNode != nil && err == nil {
-		encode.Xpath(dykNode, &person.PersonDYKSection)
+		err = encode.Xpath(dykNode, &person.PersonDYKSection)
+		if err != nil {
+			return nil, errors.Wrap(err, "error while scraping data with xpath")
+		}
 	}
 
 	knownForNode, err := htmlquery.Query(doc, "//div[@data-testid='Filmography']//div[@data-testid='nm_flmg_kwn_for']//div[ends-with(@data-testid, 'container')]")

@@ -186,7 +186,10 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 
 	var data a
 
-	json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
+	err = json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal results data")
+	}
 
 	results := data.Props.PropsPage.SearchResults.TitleResults.Items
 
@@ -240,7 +243,7 @@ type AdvancedSearchNameResult struct {
 	KnownFor struct {
 		// Indicates wether the title can have episodes.
 		CanHaveEpisodes bool `json:"canHaveEpisodes"`
-		// Orginal or full title of the movie or show.
+		// Original or full title of the movie or show.
 		OriginalTitle string `json:"originalTitle"`
 		// Imdb ID of the title.
 		ID string `json:"titleId"`
@@ -297,7 +300,10 @@ func (*ImdbClient) AdvancedSearchName(opts *AdvancedSearchNameOpts) ([]*Advanced
 
 	var data a
 
-	json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
+	err = json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal results data")
+	}
 
 	results := data.Props.PropsPage.SearchResults.NameResults.Items
 

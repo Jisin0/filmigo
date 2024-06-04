@@ -22,6 +22,7 @@ func TestGetMovie(t *testing.T) {
 			res, err := c.GetMovie(id)
 			if err != nil {
 				t.Logf("Expected error for ID %s: %v", id, err)
+
 				if id != invalidMovieID {
 					t.Errorf("Unexpected error for valid ID %s: %v", id, err)
 				}
@@ -34,5 +35,4 @@ func TestGetMovie(t *testing.T) {
 			}
 		})
 	}
-
 }

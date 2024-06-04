@@ -31,11 +31,10 @@ func TestAdvancedSearchTitle(t *testing.T) {
 				if i == lastIndex {
 					t.Errorf("error expected for item %v but results found", i)
 				} else {
-					t.Logf("item %v succesfully returned", i)
+					t.Logf("item %v successfully returned", i)
 				}
 			}
 		})
-
 	}
 }
 
@@ -62,10 +61,9 @@ func TestAdvancedSearchName(t *testing.T) {
 				if i == lastIndex {
 					t.Errorf("error expected for item %v but results found", i)
 				} else {
-					t.Logf("item %v succesfully returned", i)
+					t.Logf("item %v successfully returned", i)
 				}
 			}
 		})
-
 	}
 }

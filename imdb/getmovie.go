@@ -21,11 +21,11 @@ const (
 )
 
 type Movie struct {
-	//Imdb id of the movie .
+	// Imdb id of the movie .
 	ID string
 	// Years of release of the movie, A range for shows over multiple years.
 	ReleaseYear string
-	MovieJsonContent
+	MovieJSONContent
 	MovieDetailsSection
 }
 
@@ -48,8 +48,8 @@ type MovieDetailsSection struct {
 }
 
 // Data scraped from the json attached in the script tag.
-type MovieJsonContent struct {
-	//Type of the title possibble values are Movie, TVSeries etc.
+type MovieJSONContent struct {
+	// Type of the title possibble values are Movie, TVSeries etc.
 	Type string `json:"@type"`
 	// ID of the movie
 	ID string
@@ -59,11 +59,11 @@ type MovieJsonContent struct {
 	Title string `json:"name"`
 	// Url of the full size poster image.
 	PosterURL string `json:"image"`
-	// Content rating class (currenly undocumented).
+	// Content rating class (currently undocumented).
 	ContentRating string `json:"contentRating"`
 	// Date the movie was released on in yyyy-mm-dd format.
 	ReleaseDate string `json:"datePublished"`
-	// Keywords associated with the movie in a comma seperated list.
+	// Keywords associated with the movie in a comma separated list.
 	Keywords string `json:"keywords"`
 	// Ratings for the movie.
 	Rating Rating `json:"aggregateRating"`
@@ -181,23 +181,22 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 		ID: id,
 	}
 
-	// var ok bool
-
-	// movie, ok = encode.Xpath(doc, movie).(Movie)
-	// if !ok {
-	// 	return nil, errors.New("unknown type returned from encode.Xpath")
-	// }
-
 	jsonDataNode := htmlquery.FindOne(doc, "//script[@type='application/ld+json']")
 	if jsonDataNode == nil {
 		return nil, errors.New("json data node not found")
 	}
 
-	json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &movie.MovieJsonContent)
+	err = json.Unmarshal([]byte(htmlquery.InnerText(jsonDataNode)), &movie.MovieJSONContent)
+	if err != nil {
+		return nil, errors.New("failed to unmarshal results data")
+	}
 
 	detailsNode, err := htmlquery.Query(doc, "//section[@data-testid='Details']/div[@data-testid='title-details-section']")
 	if detailsNode != nil && err == nil {
-		encode.Xpath(detailsNode, &movie.MovieDetailsSection)
+		err = encode.Xpath(detailsNode, &movie.MovieDetailsSection)
+		if err != nil {
+			return nil, errors.Wrap(err, "error while scraping data with xpath")
+		}
 	}
 
 	releaseYearNode, err := htmlquery.Query(doc, "//h1[@data-testid='hero__pageTitle']/..//a[contains(@href, 'releaseinfo')]")

@@ -22,6 +22,7 @@ func TestGetPersons(t *testing.T) {
 			res, err := c.GetPerson(id)
 			if err != nil {
 				t.Logf("Expected error for ID %s: %v", id, err)
+
 				if id != invalidPersonID {
 					t.Errorf("Unexpected error for valid ID %s: %v", id, err)
 				}
