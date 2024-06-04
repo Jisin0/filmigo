@@ -91,7 +91,7 @@ type AdvancedSearchTitleResult struct {
 	// Rating data about the title.
 	Rating struct {
 		// Value of rating out of 10.
-		Value int `json:"aggregateRating"`
+		Value float32 `json:"aggregateRating"`
 		// Number of votes received for the title.
 		Votes int64 `json:"voteCount"`
 	} `json:"ratingSummary"`
@@ -188,7 +188,7 @@ func (*ImdbClient) AdvancedSearchTitle(opts *AdvancedSearchTitleOpts) ([]*Advanc
 
 	err = json.Unmarshal([]byte(htmlquery.InnerText(dataNode)), &data)
 	if err != nil {
-		return nil, errors.New("failed to unmarshal results data")
+		return nil, errors.Wrap(err, "failed to unmarshal results data")
 	}
 
 	results := data.Props.PropsPage.SearchResults.TitleResults.Items
