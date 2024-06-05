@@ -19,7 +19,7 @@
 </p>
 
 # filmigo
-[![codecov](https://codecov.io/gh/Jisin0/filmigo/graph/badge.svg?token=ELA38Y9ICF)](https://codecov.io/gh/Jisin0/filmigo) [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/filmigo)](https://goreportcard.com/report/github.com/Jisin0/filmigo) [![Go Reference](https://pkg.go.dev/badge/github.com/Jisin0/filmigo.svg)](https://pkg.go.dev/github.com/Jisin0/filmigo) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![codecov](https://codecov.io/gh/Jisin0/filmigo/graph/badge.svg?token=ELA38Y9ICF)](https://codecov.io/gh/Jisin0/filmigo) [![Go Report Card](https://goreportcard.com/badge/github.com/Jisin0/filmigo)](https://goreportcard.com/report/github.com/Jisin0/filmigo) [![Go Build](https://github.com/Jisin0/filmigo/workflows/Go/badge.svg)](https://github.com/Jisin0/filmigo/actions?query=workflow%3AGo+event%3Apush+branch%3Amain) [![Go Reference](https://pkg.go.dev/badge/github.com/Jisin0/filmigo.svg)](https://pkg.go.dev/github.com/Jisin0/filmigo) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **filmigo** is a library designed to make accessing movie databases as simple as possible in **Go**. 
 It provides coverage of many api methods with close to no configuration and in-built configurable caching.
