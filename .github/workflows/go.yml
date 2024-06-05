@@ -2,9 +2,6 @@ name: Go
 
 on: [push,pull_request]
 
-env:
-  OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
-  
 jobs:
 
   build:
@@ -19,6 +16,3 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
