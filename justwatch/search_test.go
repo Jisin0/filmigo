@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Jisin0/filmigo"
 	"github.com/Jisin0/filmigo/justwatch"
 )
 
@@ -19,7 +18,6 @@ func TestSearch(t *testing.T) {
 		return
 	}
 
-	filmigo.PrintJSON(r, "   ")
 	fmt.Println(r.Results[0].Genres.ToString(", "))
 	fmt.Println(r.Results[0].Backdrops[0].FullURL())
 	fmt.Println(r.Results[0].Poster.FullURL())
@@ -33,10 +31,8 @@ func TestFullTitle(t *testing.T) {
 	}
 
 	res, err := r.Results[0].FullTitle(client)
-	if err != nil {
+	if err != nil || res == nil {
 		t.Error(err)
 		return
 	}
-
-	filmigo.PrintJSON(res, "  ")
 }

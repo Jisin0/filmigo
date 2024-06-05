@@ -3,7 +3,6 @@ package imdb_test
 import (
 	"testing"
 
-	"github.com/Jisin0/filmigo"
 	"github.com/Jisin0/filmigo/imdb"
 )
 
@@ -47,10 +46,8 @@ func TestFullTitle(t *testing.T) {
 	}
 
 	res, err := r.Results[0].FullTitle(c)
-	if err != nil {
+	if err != nil || res == nil {
 		t.Error(err)
 		return
 	}
-
-	filmigo.PrintJSON(res, "  ")
 }

@@ -3,7 +3,6 @@ package omdb_test
 import (
 	"testing"
 
-	"github.com/Jisin0/filmigo"
 	"github.com/Jisin0/filmigo/omdb"
 )
 
@@ -37,10 +36,8 @@ func TestGetFull(t *testing.T) {
 	}
 
 	res, err := r.Results[0].GetFull(client)
-	if err != nil {
+	if err != nil || res == nil {
 		t.Error(err)
 		return
 	}
-
-	filmigo.PrintJSON(res, "  ")
 }
