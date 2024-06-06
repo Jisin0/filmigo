@@ -4,53 +4,19 @@
 package justwatch
 
 import (
-	"log"
-	"os"
-	"path/filepath"
+	_ "embed"
 )
 
-// Graphql queries
+// load graphql queries from file.
+
+//go:embed queries/searchtitle.graphql
 var searchTitleQuery string
+
+//go:embed queries/gettitle.graphql
 var getTitleQuery string
+
+//go:embed queries/gettitleurl.graphql
 var getTitleFromURLQuery string
+
+//go:embed queries/gettitleoffers.graphql
 var getTitleOffersQuery string
-
-// Initialize graphql queries
-func init() {
-	var err error
-
-	getTitleFromURLQuery, err = loadQuery("./queries/gettitleurl.graphql")
-	if err != nil {
-		log.Println("failed to load graphql file !", err)
-	}
-
-	getTitleQuery, err = loadQuery("./queries/gettitle.graphql")
-	if err != nil {
-		log.Println("failed to load graphql file !", err)
-	}
-
-	getTitleOffersQuery, err = loadQuery("./queries/gettitleoffers.graphql")
-	if err != nil {
-		log.Println("failed to load graphql file !", err)
-	}
-
-	searchTitleQuery, err = loadQuery("./queries/searchtitle.graphql")
-	if err != nil {
-		log.Println("failed to load graphql file !", err)
-	}
-}
-
-// Load a graphql query from file.
-func loadQuery(filePath string) (string, error) {
-	absPath, err := filepath.Abs(filePath)
-	if err != nil {
-		return "", err
-	}
-
-	query, err := os.ReadFile(absPath)
-	if err != nil {
-		return "", err
-	}
-
-	return string(query), nil
-}
