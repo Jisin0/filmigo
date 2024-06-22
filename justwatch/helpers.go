@@ -65,6 +65,7 @@ var genreFullNames map[string]string = map[string]string{
 	"hst": "History",
 	"war": "War",
 	"msc": "Musical",
+	"spt": "Sport",
 }
 
 // Returns the full genre name of the input short name.
