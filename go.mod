@@ -6,7 +6,7 @@ require (
 	github.com/antchfx/htmlquery v1.3.2
 	github.com/go-faster/errors v0.7.1
 	github.com/machinebox/graphql v0.2.2
-	golang.org/x/net v0.26.0
+	golang.org/x/net v0.27.0
 )
 
 require (
