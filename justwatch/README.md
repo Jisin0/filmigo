@@ -63,7 +63,7 @@ client.GetTitleFromURL("https://www.justwatch.com/us/movie/inception")
 ### Get Title Offers
 Use this function to get offers for a title using it's justwatch id. We'll use [tm92641](https://www.justwatch.com/us/movie/inception) for this example.
 ```go
-client.GetTitleOffers("tm820952")
+client.GetTitleOffers("tm92641")
 ```
 **Options**
 - Country : Use a country code for the specific request (uses client's country by default).
