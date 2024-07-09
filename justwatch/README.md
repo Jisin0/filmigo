@@ -40,9 +40,9 @@ client.SearchTitles("inception")
 You can fetch a title by it's id or it's url. Justwatch ids are only used internally unlike imdb that exclusively use this to identify titles.
 
 #### By ID
-Use this function to get a movie using it's justwatch id. We'll use [tm820952](https://www.justwatch.com/us/movie/inception) for this example.
+Use this function to get a movie using it's justwatch id. We'll use [tm92641](https://www.justwatch.com/us/movie/inception) for this example.
 ```go
-client.GetTitle("tt1375666")
+client.GetTitle("tm92641")
 ```
 **Options**
 - EpisodeMaxLimit : Maximimum number of episodes to return for a show season defaluts to 20.
@@ -61,7 +61,7 @@ client.GetTitleFromURL("https://www.justwatch.com/us/movie/inception")
 - LangCode : Use a language code for the specific request (uses client's LangCode by default).
 
 ### Get Title Offers
-Use this function to get offers for a title using it's justwatch id. We'll use [tm820952](https://www.justwatch.com/us/movie/inception) for this example.
+Use this function to get offers for a title using it's justwatch id. We'll use [tm92641](https://www.justwatch.com/us/movie/inception) for this example.
 ```go
 client.GetTitleOffers("tm820952")
 ```
