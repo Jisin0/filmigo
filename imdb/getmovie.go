@@ -204,6 +204,10 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 		movie.ReleaseYear = htmlquery.InnerText(releaseYearNode)
 	}
 
+	if movie.Runtime != "" {
+		movie.Runtime = parseIMDbDuration(movie.Runtime)
+	}
+
 	// Cache data for next time
 	if !c.disabledCaching {
 		err := c.cache.MovieCache.Save(id, movie)
