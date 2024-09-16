@@ -46,7 +46,7 @@ func (c *Cache) Save(id string, data interface{}) error {
 	// Serialize the data to JSON
 	filePath := filepath.Join(c.directory, id+".json")
 
-	jsonData, err := json.Marshal(cacheData)
+	jsonData, err := json.MarshalIndent(cacheData, "", "   ")
 	if err != nil {
 		return fmt.Errorf("failed to serialize data: %v", err)
 	}
