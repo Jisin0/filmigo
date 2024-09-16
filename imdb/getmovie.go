@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/Jisin0/filmigo/encode"
 	"github.com/Jisin0/filmigo/types"
@@ -166,9 +167,9 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 	}
 
 	// Get the webpage
-	url := movieBaseURL + "/" + id
+	movieURL := movieBaseURL + "/" + id
 
-	doc, err := doRequest(url)
+	doc, err := doRequest(movieURL)
 	if err != nil {
 		return nil, err
 	}
@@ -206,6 +207,10 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 
 	if movie.Runtime != "" {
 		movie.Runtime = parseIMDbDuration(movie.Runtime)
+	}
+
+	if s, err := url.QueryUnescape(movie.Title); err == nil {
+		movie.Title = s
 	}
 
 	// Cache data for next time
