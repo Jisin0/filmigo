@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Jisin0/filmigo/types"
+	"github.com/Jisin0/filmigo/internal/types"
 )
 
 var searchRangeType = reflect.TypeOf(types.SearchRange{})

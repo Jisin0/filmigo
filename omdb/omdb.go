@@ -10,7 +10,7 @@ package omdb
 import (
 	"time"
 
-	"github.com/Jisin0/filmigo/cache"
+	"github.com/Jisin0/filmigo/internal/cache"
 )
 
 // OmdbClient type provides all omdb related operations. Use omdb.NewClient to create one.

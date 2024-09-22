@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Jisin0/filmigo/encode"
+	"github.com/Jisin0/filmigo/internal/encode"
 	"github.com/go-faster/errors"
 )
 

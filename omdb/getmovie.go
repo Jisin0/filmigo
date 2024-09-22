@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Jisin0/filmigo/encode"
+	"github.com/Jisin0/filmigo/internal/encode"
 	"github.com/go-faster/errors"
 )
 

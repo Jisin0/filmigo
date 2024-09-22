@@ -12,7 +12,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/Jisin0/filmigo/cache"
+	"github.com/Jisin0/filmigo/internal/cache"
 )
 
 const (

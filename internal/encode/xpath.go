@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/Jisin0/filmigo/types"
+	"github.com/Jisin0/filmigo/internal/types"
 	"github.com/antchfx/htmlquery"
 	"golang.org/x/net/html"
 )

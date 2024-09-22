@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Jisin0/filmigo/encode"
-	"github.com/Jisin0/filmigo/types"
+	"github.com/Jisin0/filmigo/internal/encode"
+	"github.com/Jisin0/filmigo/internal/types"
 	"github.com/antchfx/htmlquery"
 	"github.com/go-faster/errors"
 )
