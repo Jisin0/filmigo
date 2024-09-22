@@ -3,19 +3,11 @@
 
 package justwatch
 
-import "strings"
+import (
+	"strings"
 
-// // TitleContent implements an interface between the different title type's content.
-// type TitleContent interface {
-// 	// Title of the movie or show .
-// 	Title() string
-// 	// Full url path of the movie or show .
-// 	FullPath() string
-// 	// Original relase year of the movie or show.
-// 	OriginalReleaseYear() string
-// 	// Poster url format of the movie or show.
-// 	Poster() PosterURL
-// }
+	"github.com/Jisin0/filmigo/internal/types"
+)
 
 // Full details of a url obtained from using GetTitleFromURL()
 type URLDetails struct {
@@ -46,7 +38,7 @@ type Title struct {
 	// Numeric id of the title for ex: ts20233 becomes 202333.
 	NumericID int `json:"objectID,omitempty"`
 	// Data or content about the title.
-	Content *TitleContent `json:"content,omitempty"`
+	Content TitleContent `json:"content,omitempty"`
 	// Total number of available offers.
 	OfferCount int `json:"offerCount,omitempty"`
 	// Total number of unique offers.
@@ -121,6 +113,18 @@ type TitleContent struct {
 	// Runtime or duration of the title in minutes.
 	Runtime int `json:"runtime,omitempty"`
 	// Age certification for ex: TV-MA.
+	// // TitleContent implements an interface between the different title type's content.
+	// type TitleContent interface {
+	// 	// Title of the movie or show .
+	// 	Title() string
+	// 	// Full url path of the movie or show .
+	// 	FullPath() string
+	// 	// Original relase year of the movie or show.
+	// 	OriginalReleaseYear() string
+	// 	// Poster url format of the movie or show.
+	// 	Poster() PosterURL
+	// }
+
 	AgeCertification string `json:"ageCertification,omitempty"`
 	// Scores and ratings for the title on different platforms
 	Scores *Scoring `json:"scoring,omitempty"`
@@ -378,4 +382,35 @@ type Icon string
 // returns the direct url to the icon.
 func (i Icon) FullURL() string {
 	return imageBaseURL + strings.TrimSuffix(string(i), ".{format}")
+}
+
+// Ensure *imdb.Movie satisfies shared movie interface
+var _ types.Movie = (*Title)(nil)
+
+func (m *Title) GetType() string {
+	return m.Type
+}
+
+func (m *Title) GetID() string {
+	return m.ID
+}
+
+func (m *Title) GetURL() string {
+	return m.Content.URLPath
+}
+
+func (m *Title) GetTitle() string {
+	return m.Content.Title
+}
+
+func (m *Title) GetPosterURL() string {
+	return m.Content.Poster.FullURL()
+}
+
+func (m *Title) GetGenres() []string {
+	return m.Content.Genres.ToList()
+}
+
+func (m *Title) GetPlot() string {
+	return m.Content.Description
 }

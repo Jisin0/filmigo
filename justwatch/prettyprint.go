@@ -9,11 +9,6 @@ import "fmt"
 func (t *Title) PrettyPrint() {
 	content := t.Content
 
-	if content == nil {
-		fmt.Println("no content found !")
-		return
-	}
-
 	fmt.Print(content.Title)
 
 	if content.ReleaseYear != 0 {
