@@ -159,8 +159,8 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 }
 
 // executes a get request to given url and parses the response body.
-func doRequest(url string) (*html.Node, error) {
-	req, err := http.NewRequest("GET", url, http.NoBody)
+func doRequest(urlPath string) (*html.Node, error) {
+	req, err := http.NewRequest("GET", urlPath, http.NoBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create request")
 	}

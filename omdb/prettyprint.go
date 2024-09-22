@@ -6,30 +6,30 @@ package omdb
 import "fmt"
 
 // PrettyPrint prints out movie data in a neat interface.
-func (t *Movie) PrettyPrint() {
-	fmt.Printf("%s(%s)", t.Title, t.Year)
+func (m *Movie) PrettyPrint() {
+	fmt.Printf("%s(%s)", m.Title, m.Year)
 
-	if t.Rated != "" {
-		fmt.Printf(" [%s Rated]", t.Rated)
+	if m.Rated != "" {
+		fmt.Printf(" [%s Rated]", m.Rated)
 	}
 
 	fmt.Println()
 
-	if t.ImdbRating != "" {
-		fmt.Printf("⭐%s | %s❤️", t.ImdbRating, t.ImdbVotes)
+	if m.ImdbRating != "" {
+		fmt.Printf("⭐%s | %s❤️", m.ImdbRating, m.ImdbVotes)
 	}
 
-	fmt.Print("\n\n", t.Plot, "\n\n")
+	fmt.Print("\n\n", m.Plot, "\n\n")
 
-	if t.Released != "" {
-		fmt.Printf("Released: %s\n", t.Released)
+	if m.Released != "" {
+		fmt.Printf("Released: %s\n", m.Released)
 	}
 
-	if t.Runtime != "" {
-		fmt.Printf("Runtime: %s\n", t.Runtime)
+	if m.Runtime != "" {
+		fmt.Printf("Runtime: %s\n", m.Runtime)
 	}
 
-	if t.Genres != "" {
-		fmt.Printf("Genres: %s\n", t.Genres)
+	if m.Genres != "" {
+		fmt.Printf("Genres: %s\n", m.Genres)
 	}
 }

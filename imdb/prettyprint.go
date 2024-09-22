@@ -9,30 +9,30 @@ import (
 )
 
 // PrettyPrint prints out movie data in a neat interface.
-func (t *Movie) PrettyPrint() {
-	fmt.Printf("%s [%s]", t.Title, t.ReleaseYear)
+func (m *Movie) PrettyPrint() {
+	fmt.Printf("%s [%s]", m.Title, m.ReleaseYear)
 
-	if t.Aka != t.Title {
-		fmt.Printf("  (aka : %s)\n", t.Aka)
+	if m.Aka != m.Title {
+		fmt.Printf("  (aka : %s)\n", m.Aka)
 	}
 
-	if t.Rating.Value != 0 {
-		fmt.Printf("⭐%v | %v❤️", t.Rating, t.Rating.Votes)
+	if m.Rating.Value != 0 {
+		fmt.Printf("⭐%v | %v❤️", m.Rating, m.Rating.Votes)
 	}
 
-	fmt.Print("\n\n", t.Plot, "\n\n")
+	fmt.Print("\n\n", m.Plot, "\n\n")
 
-	fmt.Printf("ID: %s\n", t.ID)
+	fmt.Printf("ID: %s\n", m.ID)
 
-	if t.Releaseinfo != "" {
-		fmt.Printf("Released: %s\n", t.Releaseinfo)
+	if m.Releaseinfo != "" {
+		fmt.Printf("Released: %s\n", m.Releaseinfo)
 	}
 
-	if t.Runtime != "" {
-		fmt.Printf("Runtime: %s\n", t.Runtime)
+	if m.Runtime != "" {
+		fmt.Printf("Runtime: %s\n", m.Runtime)
 	}
 
-	if len(t.Genres) > 0 {
-		fmt.Printf("Genres: %s\n", strings.Join(t.Genres, ", "))
+	if len(m.Genres) > 0 {
+		fmt.Printf("Genres: %s\n", strings.Join(m.Genres, ", "))
 	}
 }

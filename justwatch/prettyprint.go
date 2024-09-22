@@ -6,8 +6,8 @@ package justwatch
 import "fmt"
 
 // PrettyPrint prints out movie data in a neat interface.
-func (t *Title) PrettyPrint() {
-	content := t.Content
+func (m *Title) PrettyPrint() {
+	content := m.Content
 
 	fmt.Print(content.Title)
 
@@ -25,7 +25,7 @@ func (t *Title) PrettyPrint() {
 		fmt.Printf("  aka : %s\n", content.OriginalTitle)
 	}
 
-	titleType := t.Type
+	titleType := m.Type
 
 	if content.Scores != nil {
 		fmt.Printf("⭐%v/10 | %.1f%%❤️", content.Scores.ImdbRating, content.Scores.JustwatchRating*100)
@@ -37,7 +37,7 @@ func (t *Title) PrettyPrint() {
 
 	fmt.Print("\n\n", content.Description, "\n\n")
 
-	fmt.Printf("ID: %s\n", t.ID)
+	fmt.Printf("ID: %s\n", m.ID)
 
 	if content.ReleaseDate != "" {
 		fmt.Printf("Released: %s\n", content.ReleaseDate)
@@ -54,9 +54,9 @@ func (t *Title) PrettyPrint() {
 	}
 
 	if titleType == "SHOW" {
-		fmt.Printf("Seasons: %v\n", t.TotalSeasonCount)
+		fmt.Printf("Seasons: %v\n", m.TotalSeasonCount)
 	} else if titleType == "SHOW_SEASON" {
-		fmt.Printf("Show: %s\n", t.Show.Content.Title)
-		fmt.Printf("Episodes: %v\n", t.TotalEpisodeCount)
+		fmt.Printf("Show: %s\n", m.Show.Content.Title)
+		fmt.Printf("Episodes: %v\n", m.TotalEpisodeCount)
 	}
 }
