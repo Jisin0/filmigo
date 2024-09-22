@@ -33,7 +33,7 @@ type GetMovieOpts struct {
 type Rating struct {
 	// Source of the rating for ex: Internet Movie Database.
 	Source string `json:"source"`
-	// Value of the rating either as a frcation or percentage.
+	// Value of the rating either as a fraction or percentage.
 	Value string `json:"value"`
 }
 

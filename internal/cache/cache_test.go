@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Jisin0/filmigo/cache"
+	"github.com/Jisin0/filmigo/internal/cache"
 )
 
 func TestCache(t *testing.T) {
