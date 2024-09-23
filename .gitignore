@@ -22,7 +22,7 @@ go.work
 go.work.sum
 
 # Cache files
-imdb/.imdbcache/
+.imdbcache/
 
 # Sample output files
 output.html
@@ -33,3 +33,6 @@ apikey.txt
 
 # Local unorganized tests
 local_test.go
+
+# build binary
+filmigo
