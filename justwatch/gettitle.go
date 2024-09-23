@@ -5,7 +5,6 @@ package justwatch
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 	"strings"
 
@@ -100,7 +99,6 @@ func (c *JustwatchClient) GetTitleFromURL(path string, opts ...*GetTitleOptions)
 		}
 
 		path = parsedURL.Path
-		fmt.Println(path)
 	}
 
 	var (

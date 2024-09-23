@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -19,7 +18,8 @@ var (
 )
 
 var (
-	useOmdb bool
+	useOmdb    bool
+	omdbApiKey string
 
 	getCmd = &cobra.Command{
 		Use:   "get",
@@ -32,6 +32,7 @@ var (
 
 func init() {
 	getCmd.Flags().BoolVar(&useOmdb, "omdb", false, "omdb engine")
+	getCmd.Flags().StringVar(&omdbApiKey, "apikey", "", "omdb api key")
 }
 
 func runGet(cmd *cobra.Command, args []string) error {
@@ -44,8 +45,6 @@ func runGet(cmd *cobra.Command, args []string) error {
 		result types.Movie
 		err    error
 	)
-
-	fmt.Println(useOmdb)
 
 	switch {
 	case imdbIdRegex.MatchString(id):
