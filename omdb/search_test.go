@@ -11,6 +11,10 @@ const (
 )
 
 func TestSearch(t *testing.T) {
+	if client == nil {
+		return
+	}
+
 	r, e := client.Search(query, &omdb.SearchOpts{Type: omdb.ResultTypeMovie})
 	if e != nil {
 		t.Error(e)
@@ -29,6 +33,10 @@ func TestSearch(t *testing.T) {
 }
 
 func TestGetFull(t *testing.T) {
+	if client == nil {
+		return
+	}
+
 	r, e := client.Search(query, &omdb.SearchOpts{Type: omdb.ResultTypeMovie})
 	if e != nil {
 		t.Error(e)

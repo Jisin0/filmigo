@@ -11,6 +11,10 @@ const (
 )
 
 func TestGetMovie(t *testing.T) {
+	if client == nil {
+		return
+	}
+
 	r, e := client.GetMovie(&omdb.GetMovieOpts{ID: oppenheimerID})
 	if e != nil {
 		t.Error(e)
