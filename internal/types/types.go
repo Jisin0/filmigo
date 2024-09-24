@@ -20,6 +20,10 @@ type Links []Link
 func (ls Links) ToString(sep string) string {
 	var s []string
 	for _, l := range ls {
+		if l.Text == "" {
+			continue
+		}
+
 		s = append(s, l.Text)
 	}
 
