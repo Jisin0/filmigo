@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -21,6 +23,7 @@ var (
 var (
 	useOmdb    bool
 	omdbApiKey string
+	outputJson bool
 
 	getCmd = &cobra.Command{
 		Use:   "get",
@@ -33,6 +36,7 @@ var (
 
 func init() {
 	getCmd.Flags().BoolVar(&useOmdb, "omdb", false, "use omdb engine")
+	getCmd.Flags().BoolVar(&outputJson, "json", false, "output result as json")
 	getCmd.Flags().StringVar(&omdbApiKey, "apikey", "", "omdb api key")
 }
 
@@ -67,7 +71,16 @@ func runGet(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	result.PrettyPrint()
+	if outputJson {
+		bytes, err := json.MarshalIndent(result, "", "   ")
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(string(bytes))
+	} else {
+		result.PrettyPrint()
+	}
 
 	return nil
 }

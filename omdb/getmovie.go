@@ -44,7 +44,7 @@ func (c *OmdbClient) GetMovie(opts *GetMovieOpts) (*Movie, error) {
 	}
 
 	if c.apiKey == "" {
-		return nil, errors.New("no obdb api key provided")
+		return nil, errors.New("no omdb api key provided")
 	}
 
 	urlParams, err := encode.URLParams(*opts)

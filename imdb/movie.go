@@ -5,10 +5,8 @@ package imdb
 import "github.com/Jisin0/filmigo/internal/types"
 
 type Movie struct {
-	// Imdb id of the movie .
-	ID string
 	// Years of release of the movie, A range for shows over multiple years.
-	ReleaseYear string
+	ReleaseYear string `json:"year"`
 	MovieJSONContent
 	MovieDetailsSection
 }
@@ -16,19 +14,19 @@ type Movie struct {
 // Data scraped from the details section of a movie using xpath.
 type MovieDetailsSection struct {
 	// A string with details about the release including date and country
-	Releaseinfo string `xpath:"//li[@data-testid='title-details-releasedate']/div//a"`
+	Releaseinfo string `xpath:"//li[@data-testid='title-details-releasedate']/div//a" json:"release_info"`
 	// Origin of release, commonly the country
-	Origin string `xpath:"//li[@data-testid='title-details-origin']/div//a"`
+	Origin string `xpath:"//li[@data-testid='title-details-origin']/div//a" json:"origin"`
 	// Official sites related to the movie/show
-	OfficialSites types.Links `xpath:"//li[@data-testid='details-officialsites']/div/ul"`
+	OfficialSites types.Links `xpath:"//li[@data-testid='details-officialsites']/div/ul" json:"official_sites"`
 	// Languages in which the movie/show is available in
-	Languages types.Links `xpath:"//li[@data-testid='title-details-languages']/div/ul"`
+	Languages types.Links `xpath:"//li[@data-testid='title-details-languages']/div/ul" json:"languages"`
 	// Any alternative name of the movie.
-	Aka string `xpath:"//li[@data-testid='title-details-akas']//span"`
+	Aka string `xpath:"//li[@data-testid='title-details-akas']//span" json:"aka"`
 	// Locations at which the movie/show was filmed at
-	Locations types.Links `xpath:"//li[@data-testid='title-details-filminglocations']/div/ul"`
+	Locations types.Links `xpath:"//li[@data-testid='title-details-filminglocations']/div/ul" json:"locations"`
 	// Companies which produced the movie
-	Companies types.Links `xpath:"//li[@data-testid='title-details-companies']/div/ul"`
+	Companies types.Links `xpath:"//li[@data-testid='title-details-companies']/div/ul" json:"companies"`
 }
 
 // Data scraped from the json attached in the script tag.
@@ -36,7 +34,7 @@ type MovieJSONContent struct {
 	// Type of the title possibble values are Movie, TVSeries etc.
 	Type string `json:"@type"`
 	// ID of the movie
-	ID string
+	ID string `json:"id"`
 	// Link to the movie
 	URL string `json:"url"`
 	// Full title of the movie
