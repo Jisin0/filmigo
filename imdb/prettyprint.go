@@ -59,6 +59,10 @@ func (m *Movie) PrettyPrint() {
 		fmt.Printf("\nLocations: %s", m.Locations.ToString(", "))
 	}
 
+	if len(m.Companies) > 0 {
+		fmt.Printf("\nProducers: %s", m.Companies.ToString(", "))
+	}
+
 	if m.Plot != "" {
 		fmt.Printf("\nPlot: %s", html.UnescapeString(m.Plot))
 	}
