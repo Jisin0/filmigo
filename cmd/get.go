@@ -8,6 +8,7 @@ import (
 	"github.com/Jisin0/filmigo/imdb"
 	"github.com/Jisin0/filmigo/internal/types"
 	"github.com/Jisin0/filmigo/justwatch"
+	"github.com/Jisin0/filmigo/omdb"
 	"github.com/spf13/cobra"
 )
 
@@ -31,7 +32,7 @@ var (
 )
 
 func init() {
-	getCmd.Flags().BoolVar(&useOmdb, "omdb", false, "omdb engine")
+	getCmd.Flags().BoolVar(&useOmdb, "omdb", false, "use omdb engine")
 	getCmd.Flags().StringVar(&omdbApiKey, "apikey", "", "omdb api key")
 }
 
@@ -48,12 +49,18 @@ func runGet(cmd *cobra.Command, args []string) error {
 
 	switch {
 	case imdbIdRegex.MatchString(id):
-		result, err = imdb.NewClient().GetMovie(id)
+		if useOmdb {
+			result, err = omdb.NewClient(omdbApiKey).GetMovie(&omdb.GetMovieOpts{ID: id})
+		} else {
+			result, err = imdb.NewClient().GetMovie(id)
+		}
 	case justwatchIdRegex.MatchString(id):
 		result, err = justwatch.NewClient().GetTitle(id)
 	case strings.Contains(id, "justwatch.com"):
 		r, e := justwatch.NewClient().GetTitleFromURL(id)
 		result, err = r.Data, e
+	case useOmdb: // title search if omdb enabled and doesn't match any id
+		result, err = omdb.NewClient(omdbApiKey).GetMovie(&omdb.GetMovieOpts{Title: id})
 	}
 
 	if err != nil {
