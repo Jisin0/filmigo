@@ -5,6 +5,8 @@ package imdb
 import "github.com/Jisin0/filmigo/internal/types"
 
 type Movie struct {
+	// Imdb id of the movie .
+	ID string `json:"id"`
 	// Years of release of the movie, A range for shows over multiple years.
 	ReleaseYear string `json:"year"`
 	MovieJSONContent
@@ -33,8 +35,6 @@ type MovieDetailsSection struct {
 type MovieJSONContent struct {
 	// Type of the title possibble values are Movie, TVSeries etc.
 	Type string `json:"@type"`
-	// ID of the movie
-	ID string `json:"id"`
 	// Link to the movie
 	URL string `json:"url"`
 	// Full title of the movie

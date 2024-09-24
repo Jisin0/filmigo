@@ -112,6 +112,10 @@ func (c *ImdbClient) GetMovie(id string) (*Movie, error) {
 		return nil, errors.New("movie or or person not found")
 	}
 
+	movie = Movie{
+		ID: id,
+	}
+
 	jsonDataNode := htmlquery.FindOne(doc, "//script[@type='application/ld+json']")
 	if jsonDataNode == nil {
 		return nil, errors.New("json data node not found")
