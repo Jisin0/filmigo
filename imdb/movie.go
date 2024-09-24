@@ -27,8 +27,8 @@ type MovieDetailsSection struct {
 	Aka string `xpath:"//li[@data-testid='title-details-akas']//span" json:"aka"`
 	// Locations at which the movie/show was filmed at
 	Locations types.Links `xpath:"//li[@data-testid='title-details-filminglocations']/div/ul" json:"locations"`
-	// Companies which produced the movie
-	Companies types.Links `xpath:"//li[@data-testid='title-details-companies']/div/ul" json:"companies"`
+	// Producers which produced the movie
+	Producers types.Links `xpath:"//li[@data-testid='title-details-companies']/div/ul" json:"producers"`
 }
 
 // Data scraped from the json attached in the script tag.
