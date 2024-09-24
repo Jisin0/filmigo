@@ -1,6 +1,9 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	imdbcmd "github.com/Jisin0/filmigo/cmd/imdb"
+	"github.com/spf13/cobra"
+)
 
 var (
 	rootCmd = &cobra.Command{
@@ -15,6 +18,7 @@ use "filmigo sites" to get a list of all supported sites.`,
 func init() {
 	rootCmd.AddCommand(searchCmd)
 	rootCmd.AddCommand(getCmd)
+	rootCmd.AddCommand(imdbcmd.NewCommand())
 }
 
 // Execute executes the root command.
