@@ -12,6 +12,7 @@ import (
 // PrettyPrint prints out movie data in a neat interface.
 func (m *Movie) PrettyPrint() {
 	fmt.Printf("Id: %s\n", m.ID)
+	fmt.Printf("Type: %s\n", m.Type)
 	fmt.Printf("Title: %s", m.Title)
 	fmt.Printf("\nYear: %s", m.ReleaseYear)
 
@@ -61,6 +62,10 @@ func (m *Movie) PrettyPrint() {
 
 	if len(m.Producers) > 0 {
 		fmt.Printf("\nProducers: %s", m.Producers.ToString(", "))
+	}
+
+	if m.PosterURL != "" {
+		fmt.Printf("\nPoster: %s", m.PosterURL)
 	}
 
 	if m.Plot != "" {
