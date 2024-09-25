@@ -44,3 +44,8 @@ func RecognizeID(input string) (IDSource, IDType) {
 		return IDSourceUnknown, IDTypeUnknown
 	}
 }
+
+// IsIMDbTitle indicates wether the id matches the imdb title id regex.
+func IsIMDbTitle(input string) bool {
+	return imdbTitleRegex.MatchString(input)
+}
