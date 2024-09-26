@@ -2,6 +2,7 @@ package cmd
 
 import (
 	imdbcmd "github.com/Jisin0/filmigo/cmd/imdb"
+	justwatchcmd "github.com/Jisin0/filmigo/cmd/justwatch"
 	omdbcmd "github.com/Jisin0/filmigo/cmd/omdb"
 	"github.com/spf13/cobra"
 )
@@ -21,6 +22,7 @@ func init() {
 	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(imdbcmd.NewCommand())
 	rootCmd.AddCommand(omdbcmd.NewCommand())
+	rootCmd.AddCommand(justwatchcmd.NewCommand())
 }
 
 // Execute executes the root command.

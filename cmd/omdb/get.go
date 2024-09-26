@@ -16,7 +16,7 @@ var (
 	plotType   string
 	getCmd     = &cobra.Command{
 		Use:   "get",
-		Short: "Get Full Data of a Movie or Person",
+		Short: "Get Full Data of a Movie or Show",
 		Long:  `Get Movie Using It's IMDb id or Name.`,
 		Args:  cobra.ExactArgs(1),
 		RunE:  runGet,
